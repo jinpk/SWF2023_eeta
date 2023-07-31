@@ -6,6 +6,7 @@ import (
 	"eeta/testutil/sample"
 	depositsimulation "eeta/x/deposit/simulation"
 	"eeta/x/deposit/types"
+
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
@@ -61,10 +62,6 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 			weightMsgDeposit = defaultWeightMsgDeposit
 		},
 	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgDeposit,
-		depositsimulation.SimulateMsgDeposit(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
 
 	// this line is used by starport scaffolding # simapp/module/operation
 
@@ -78,7 +75,6 @@ func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.Wei
 			opWeightMsgDeposit,
 			defaultWeightMsgDeposit,
 			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
-				depositsimulation.SimulateMsgDeposit(am.accountKeeper, am.bankKeeper, am.keeper)
 				return nil
 			},
 		),

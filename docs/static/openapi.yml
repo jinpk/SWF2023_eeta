@@ -70652,7 +70652,7 @@ definitions:
         description: params holds all the parameters of this module.
         type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
-  eeta.deposit.MsgDepositResponse:
+  eeta.deposit.MsgMintResponse:
     type: object
   eeta.deposit.Params:
     type: object

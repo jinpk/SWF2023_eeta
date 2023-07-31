@@ -541,6 +541,7 @@ func New(
 		keys[depositmoduletypes.StoreKey],
 		keys[depositmoduletypes.MemStoreKey],
 		app.GetSubspace(depositmoduletypes.ModuleName),
+		app.BankKeeper,
 	)
 	depositModule := depositmodule.NewAppModule(appCodec, app.DepositKeeper, app.AccountKeeper, app.BankKeeper)
 

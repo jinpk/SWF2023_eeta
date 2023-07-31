@@ -4,23 +4,24 @@ import (
 	"strconv"
 
 	"eeta/x/deposit/types"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	"github.com/spf13/cast"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 )
 
 var _ = strconv.Itoa(0)
 
-func CmdDeposit() *cobra.Command {
+func CmdMint() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "deposit [receipient-address] [amount]",
+		Use:   "mint [receipient-address] [amount]",
 		Short: "Broadcast message deposit",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argReceipientAddress := args[0]
-			argAmount, err := cast.ToUint64E(args[1])
+			argAmount, err := sdk.ParseCoinNormalized(args[1])
 			if err != nil {
 				return err
 			}
@@ -30,7 +31,7 @@ func CmdDeposit() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgDeposit(
+			msg := types.NewMsgMint(
 				clientCtx.GetFromAddress().String(),
 				argReceipientAddress,
 				argAmount,
