@@ -117,6 +117,9 @@ import (
 	stomodulekeeper "eeta/x/sto/keeper"
 	stomoduletypes "eeta/x/sto/types"
 
+	depositmodule "eeta/x/deposit"
+	depositmodulekeeper "eeta/x/deposit/keeper"
+	depositmoduletypes "eeta/x/deposit/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	appparams "eeta/app/params"
@@ -179,6 +182,7 @@ var (
 		eetamodule.AppModuleBasic{},
 		billboardmodule.AppModuleBasic{},
 		stomodule.AppModuleBasic{},
+		depositmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -257,6 +261,8 @@ type App struct {
 	BillboardKeeper billboardmodulekeeper.Keeper
 
 	StoKeeper stomodulekeeper.Keeper
+
+	DepositKeeper depositmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -306,6 +312,7 @@ func New(
 		eetamoduletypes.StoreKey,
 		billboardmoduletypes.StoreKey,
 		stomoduletypes.StoreKey,
+		depositmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -542,6 +549,14 @@ func New(
 	)
 	stoModule := stomodule.NewAppModule(appCodec, app.StoKeeper, app.AccountKeeper, app.BankKeeper)
 
+	app.DepositKeeper = *depositmodulekeeper.NewKeeper(
+		appCodec,
+		keys[depositmoduletypes.StoreKey],
+		keys[depositmoduletypes.MemStoreKey],
+		app.GetSubspace(depositmoduletypes.ModuleName),
+	)
+	depositModule := depositmodule.NewAppModule(appCodec, app.DepositKeeper, app.AccountKeeper, app.BankKeeper)
+
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	/**** IBC Routing ****/
@@ -605,6 +620,7 @@ func New(
 		eetaModule,
 		billboardModule,
 		stoModule,
+		depositModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)), // always be last to make sure that it checks for all invariants and not only part of them
@@ -639,6 +655,7 @@ func New(
 		eetamoduletypes.ModuleName,
 		billboardmoduletypes.ModuleName,
 		stomoduletypes.ModuleName,
+		depositmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -666,6 +683,7 @@ func New(
 		eetamoduletypes.ModuleName,
 		billboardmoduletypes.ModuleName,
 		stomoduletypes.ModuleName,
+		depositmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -698,6 +716,7 @@ func New(
 		eetamoduletypes.ModuleName,
 		billboardmoduletypes.ModuleName,
 		stomoduletypes.ModuleName,
+		depositmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 	app.mm.SetOrderInitGenesis(genesisModuleOrder...)
@@ -924,6 +943,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(eetamoduletypes.ModuleName)
 	paramsKeeper.Subspace(billboardmoduletypes.ModuleName)
 	paramsKeeper.Subspace(stomoduletypes.ModuleName)
+	paramsKeeper.Subspace(depositmoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper

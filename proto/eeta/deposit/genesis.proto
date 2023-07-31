@@ -1,0 +1,12 @@
+syntax = "proto3";
+package eeta.deposit;
+
+import "gogoproto/gogo.proto";
+import "eeta/deposit/params.proto";
+
+option go_package = "eeta/x/deposit/types";
+
+// GenesisState defines the deposit module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+}
