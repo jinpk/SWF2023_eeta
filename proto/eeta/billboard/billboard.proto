@@ -1,0 +1,24 @@
+syntax = "proto3";
+package eeta.billboard;
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "eeta/x/billboard/types";
+
+message Billboard {
+    option (gogoproto.equal) = true;
+
+    uint64 id = 1;
+    string owner_address = 2;
+    string name = 3;
+    string description = 4;
+    string url = 5;
+    BillboardType type = 6;
+    cosmos.base.v1beta1.Coin min_price = 7 [(gogoproto.nullable) = false];
+}
+
+enum BillboardType {
+    ONLINE = 0;
+    OFFLINE = 1;
+}

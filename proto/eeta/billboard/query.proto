@@ -5,6 +5,7 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "eeta/billboard/params.proto";
+import "eeta/billboard/billboard.proto";
 
 option go_package = "eeta/x/billboard/types";
 
@@ -12,15 +13,27 @@ option go_package = "eeta/x/billboard/types";
 service Query {
   // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/eeta/billboard/params";
+    option (google.api.http).get = "/eeta/billboards/params";
+  }
+
+  // Parameters queries the parameters of the module.
+  rpc ListBillboard(ListBillboardRequest) returns (ListBillboardResponse) {
+    option (google.api.http).get = "/eeta/billboards";
   }
 }
 
-// QueryParamsRequest is request type for the Query/Params RPC method.
+message ListBillboardRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message ListBillboardResponse {
+  // params holds all the parameters of this module.
+  repeated Billboard billboards = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
 message QueryParamsRequest {}
 
-// QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
-  // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
 }
