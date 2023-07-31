@@ -1,7 +1,0 @@
-syntax = "proto3";
-package eeta.eeta;
-
-option go_package = "eeta/x/eeta/types";
-
-// Msg defines the Msg service.
-service Msg {}

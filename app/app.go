@@ -110,9 +110,6 @@ import (
 	billboardmodule "eeta/x/billboard"
 	billboardmodulekeeper "eeta/x/billboard/keeper"
 	billboardmoduletypes "eeta/x/billboard/types"
-	eetamodule "eeta/x/eeta"
-	eetamodulekeeper "eeta/x/eeta/keeper"
-	eetamoduletypes "eeta/x/eeta/types"
 	stomodule "eeta/x/sto"
 	stomodulekeeper "eeta/x/sto/keeper"
 	stomoduletypes "eeta/x/sto/types"
@@ -120,6 +117,7 @@ import (
 	depositmodule "eeta/x/deposit"
 	depositmodulekeeper "eeta/x/deposit/keeper"
 	depositmoduletypes "eeta/x/deposit/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	appparams "eeta/app/params"
@@ -127,7 +125,7 @@ import (
 )
 
 const (
-	AccountAddressPrefix = "hana"
+	AccountAddressPrefix = "eeta"
 	Name                 = "eeta"
 )
 
@@ -179,7 +177,6 @@ var (
 		ica.AppModuleBasic{},
 		vesting.AppModuleBasic{},
 		consensus.AppModuleBasic{},
-		eetamodule.AppModuleBasic{},
 		billboardmodule.AppModuleBasic{},
 		stomodule.AppModuleBasic{},
 		depositmodule.AppModuleBasic{},
@@ -191,6 +188,7 @@ var (
 		authtypes.FeeCollectorName:     nil,
 		distrtypes.ModuleName:          nil,
 		icatypes.ModuleName:            nil,
+		depositmoduletypes.ModuleName:  {authtypes.Minter},
 		stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
 		govtypes.ModuleName:            {authtypes.Burner},
@@ -256,8 +254,6 @@ type App struct {
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
 	ScopedICAHostKeeper  capabilitykeeper.ScopedKeeper
 
-	EetaKeeper eetamodulekeeper.Keeper
-
 	BillboardKeeper billboardmodulekeeper.Keeper
 
 	StoKeeper stomodulekeeper.Keeper
@@ -309,7 +305,6 @@ func New(
 		govtypes.StoreKey, paramstypes.StoreKey, ibcexported.StoreKey, upgradetypes.StoreKey,
 		feegrant.StoreKey, evidencetypes.StoreKey, ibctransfertypes.StoreKey, icahosttypes.StoreKey,
 		capabilitytypes.StoreKey, group.StoreKey, icacontrollertypes.StoreKey, consensusparamtypes.StoreKey,
-		eetamoduletypes.StoreKey,
 		billboardmoduletypes.StoreKey,
 		stomoduletypes.StoreKey,
 		depositmoduletypes.StoreKey,
@@ -525,14 +520,6 @@ func New(
 		),
 	)
 
-	app.EetaKeeper = *eetamodulekeeper.NewKeeper(
-		appCodec,
-		keys[eetamoduletypes.StoreKey],
-		keys[eetamoduletypes.MemStoreKey],
-		app.GetSubspace(eetamoduletypes.ModuleName),
-	)
-	eetaModule := eetamodule.NewAppModule(appCodec, app.EetaKeeper, app.AccountKeeper, app.BankKeeper)
-
 	app.BillboardKeeper = *billboardmodulekeeper.NewKeeper(
 		appCodec,
 		keys[billboardmoduletypes.StoreKey],
@@ -617,7 +604,6 @@ func New(
 		params.NewAppModule(app.ParamsKeeper),
 		transferModule,
 		icaModule,
-		eetaModule,
 		billboardModule,
 		stoModule,
 		depositModule,
@@ -652,7 +638,6 @@ func New(
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
-		eetamoduletypes.ModuleName,
 		billboardmoduletypes.ModuleName,
 		stomoduletypes.ModuleName,
 		depositmoduletypes.ModuleName,
@@ -680,7 +665,6 @@ func New(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
-		eetamoduletypes.ModuleName,
 		billboardmoduletypes.ModuleName,
 		stomoduletypes.ModuleName,
 		depositmoduletypes.ModuleName,
@@ -713,7 +697,6 @@ func New(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
-		eetamoduletypes.ModuleName,
 		billboardmoduletypes.ModuleName,
 		stomoduletypes.ModuleName,
 		depositmoduletypes.ModuleName,
@@ -940,7 +923,6 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibcexported.ModuleName)
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName)
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
-	paramsKeeper.Subspace(eetamoduletypes.ModuleName)
 	paramsKeeper.Subspace(billboardmoduletypes.ModuleName)
 	paramsKeeper.Subspace(stomoduletypes.ModuleName)
 	paramsKeeper.Subspace(depositmoduletypes.ModuleName)
