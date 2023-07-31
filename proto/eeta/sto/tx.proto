@@ -1,0 +1,7 @@
+syntax = "proto3";
+package eeta.sto;
+
+option go_package = "eeta/x/sto/types";
+
+// Msg defines the Msg service.
+service Msg {}

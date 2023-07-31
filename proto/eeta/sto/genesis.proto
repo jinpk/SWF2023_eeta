@@ -1,0 +1,12 @@
+syntax = "proto3";
+package eeta.sto;
+
+import "gogoproto/gogo.proto";
+import "eeta/sto/params.proto";
+
+option go_package = "eeta/x/sto/types";
+
+// GenesisState defines the sto module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+}
