@@ -1,0 +1,12 @@
+syntax = "proto3";
+package eeta.billboard;
+
+import "gogoproto/gogo.proto";
+import "eeta/billboard/params.proto";
+
+option go_package = "eeta/x/billboard/types";
+
+// GenesisState defines the billboard module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+}

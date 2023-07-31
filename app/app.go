@@ -110,6 +110,9 @@ import (
 	ibctm "github.com/cosmos/ibc-go/v7/modules/light-clients/07-tendermint"
 	"github.com/spf13/cast"
 
+	billboardmodule "eeta/x/billboard"
+	billboardmodulekeeper "eeta/x/billboard/keeper"
+	billboardmoduletypes "eeta/x/billboard/types"
 	eetamodule "eeta/x/eeta"
 	eetamodulekeeper "eeta/x/eeta/keeper"
 	eetamoduletypes "eeta/x/eeta/types"
@@ -174,6 +177,7 @@ var (
 		vesting.AppModuleBasic{},
 		consensus.AppModuleBasic{},
 		eetamodule.AppModuleBasic{},
+		billboardmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -250,6 +254,8 @@ type App struct {
 	ScopedICAHostKeeper  capabilitykeeper.ScopedKeeper
 
 	EetaKeeper eetamodulekeeper.Keeper
+
+	BillboardKeeper billboardmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -297,6 +303,7 @@ func New(
 		feegrant.StoreKey, evidencetypes.StoreKey, ibctransfertypes.StoreKey, icahosttypes.StoreKey,
 		capabilitytypes.StoreKey, group.StoreKey, icacontrollertypes.StoreKey, consensusparamtypes.StoreKey,
 		eetamoduletypes.StoreKey,
+		billboardmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -527,6 +534,14 @@ func New(
 	)
 	eetaModule := eetamodule.NewAppModule(appCodec, app.EetaKeeper, app.AccountKeeper, app.BankKeeper)
 
+	app.BillboardKeeper = *billboardmodulekeeper.NewKeeper(
+		appCodec,
+		keys[billboardmoduletypes.StoreKey],
+		keys[billboardmoduletypes.MemStoreKey],
+		app.GetSubspace(billboardmoduletypes.ModuleName),
+	)
+	billboardModule := billboardmodule.NewAppModule(appCodec, app.BillboardKeeper, app.AccountKeeper, app.BankKeeper)
+
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	/**** IBC Routing ****/
@@ -589,6 +604,7 @@ func New(
 		transferModule,
 		icaModule,
 		eetaModule,
+		billboardModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)), // always be last to make sure that it checks for all invariants and not only part of them
@@ -622,6 +638,7 @@ func New(
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		eetamoduletypes.ModuleName,
+		billboardmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -648,6 +665,7 @@ func New(
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		eetamoduletypes.ModuleName,
+		billboardmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -679,6 +697,7 @@ func New(
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		eetamoduletypes.ModuleName,
+		billboardmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 	app.mm.SetOrderInitGenesis(genesisModuleOrder...)
@@ -904,6 +923,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName)
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
 	paramsKeeper.Subspace(eetamoduletypes.ModuleName)
+	paramsKeeper.Subspace(billboardmoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper
