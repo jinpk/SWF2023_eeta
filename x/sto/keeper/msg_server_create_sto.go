@@ -32,10 +32,12 @@ func (k msgServer) CreateSto(goCtx context.Context, msg *types.MsgCreateSto) (*t
 	creatorAddr := sdk.MustAccAddressFromBech32(msg.Creator)
 	stoAddresss := types.NewStoPoolAddress(nextStoId)
 
-	// start, end 시간 등록 가능한지 계산
+	// TODO: start, end로 billboard sto 가능한 시간대인지 검증
 
-	// TODO: creator shares로 펀드 계산 (나누기)
-	organizerFundAmount := sdk.NewCoin(deposittypes.StableCoinDenom, math.NewInt(1000_000000))
+	organizerFundAmount := sdk.NewCoin(
+		deposittypes.StableCoinDenom,
+		goal.Amount.Quo(math.NewInt(int64(msg.OrganizerShare))),
+	)
 
 	if k.bankKeeper.GetBalance(ctx, creatorAddr, deposittypes.StableCoinDenom).Amount.LT(organizerFundAmount.Amount) {
 		return nil, types.ErrInsufiendOrganazierShare
