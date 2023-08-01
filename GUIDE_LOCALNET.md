@@ -1,8 +1,19 @@
+
 ```bash
 eetad init node -o --chain-id eeta
 
 eetad keys add u1
 
+# minter addres 설정
+# ~/.eeta/config/genesis.json
+    "deposit": {
+      "params": {
+        "minter_address": <u1's address>
+      }
+    }
+```
+
+```bash
 eetad add-genesis-account {address} 1000000000000stake 
 
 eetad gentx u1 500000000000stake \

@@ -34923,7 +34923,7 @@ paths:
           format: int64
       tags:
         - Query
-  /eeta/billboard/list_billboard:
+  /eeta/billboards:
     get:
       summary: Queries a list of ListBillboard items.
       operationId: EetaBillboardListBillboard
@@ -34934,40 +34934,38 @@ paths:
             type: object
             properties:
               billboard:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    format: uint64
-                  owner_address:
-                    type: string
-                  name:
-                    type: string
-                  description:
-                    type: string
-                  url:
-                    type: string
-                  type:
-                    type: string
-                    enum:
-                      - ONLINE
-                      - OFFLINE
-                    default: ONLINE
-                  min_price:
-                    type: object
-                    properties:
-                      denom:
-                        type: string
-                      amount:
-                        type: string
-                    description: >-
-                      Coin defines a token with a denomination and an amount.
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uint64
+                    owner_address:
+                      type: string
+                    name:
+                      type: string
+                    description:
+                      type: string
+                    url:
+                      type: string
+                    board_type:
+                      type: string
+                    min_price:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
 
 
-                      NOTE: The amount field is an Int which implements the
-                      custom method
+                        NOTE: The amount field is an Int which implements the
+                        custom method
 
-                      signatures required by gogoproto.
+                        signatures required by gogoproto.
               pagination:
                 type: object
                 properties:
@@ -70803,12 +70801,8 @@ definitions:
         type: string
       url:
         type: string
-      type:
+      board_type:
         type: string
-        enum:
-          - ONLINE
-          - OFFLINE
-        default: ONLINE
       min_price:
         type: object
         properties:
@@ -70821,12 +70815,6 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
-  eeta.billboard.BillboardType:
-    type: string
-    enum:
-      - ONLINE
-      - OFFLINE
-    default: ONLINE
   eeta.billboard.MsgCreateBillboardResponse:
     type: object
   eeta.billboard.Params:
@@ -70836,40 +70824,38 @@ definitions:
     type: object
     properties:
       billboard:
-        type: object
-        properties:
-          id:
-            type: string
-            format: uint64
-          owner_address:
-            type: string
-          name:
-            type: string
-          description:
-            type: string
-          url:
-            type: string
-          type:
-            type: string
-            enum:
-              - ONLINE
-              - OFFLINE
-            default: ONLINE
-          min_price:
-            type: object
-            properties:
-              denom:
-                type: string
-              amount:
-                type: string
-            description: >-
-              Coin defines a token with a denomination and an amount.
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uint64
+            owner_address:
+              type: string
+            name:
+              type: string
+            description:
+              type: string
+            url:
+              type: string
+            board_type:
+              type: string
+            min_price:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
 
 
-              NOTE: The amount field is an Int which implements the custom
-              method
+                NOTE: The amount field is an Int which implements the custom
+                method
 
-              signatures required by gogoproto.
+                signatures required by gogoproto.
       pagination:
         type: object
         properties:

@@ -7,7 +7,6 @@ import (
 	"eeta/x/deposit/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func (k msgServer) Mint(goCtx context.Context, msg *types.MsgMint) (*types.MsgMintResponse, error) {
@@ -20,7 +19,7 @@ func (k msgServer) Mint(goCtx context.Context, msg *types.MsgMint) (*types.MsgMi
 	params := k.GetParams(ctx)
 	minterAddres := params.GetMinterAddress()
 	if !strings.EqualFold(minterAddres, msg.Sender) {
-		return nil, errors.Wrap("unauthorized sender address for minter")
+		return nil, types.ErrUnauthMint
 	}
 
 	if address, err := sdk.AccAddressFromBech32(msg.ReceipientAddress); err != nil {
