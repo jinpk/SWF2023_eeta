@@ -1,4 +1,5 @@
 syntax = "proto3";
+
 package eeta.billboard;
 
 import "gogoproto/gogo.proto";
@@ -11,25 +12,28 @@ option go_package = "eeta/x/billboard/types";
 
 // Query defines the gRPC querier service.
 service Query {
+  
   // Parameters queries the parameters of the module.
-  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/eeta/billboards/params";
+  
   }
-
-  // Parameters queries the parameters of the module.
-  rpc ListBillboard(ListBillboardRequest) returns (ListBillboardResponse) {
+  
+  // Queries a list of ListBillboard items.
+  rpc ListBillboard (QueryListBillboardRequest) returns (QueryListBillboardResponse) {
     option (google.api.http).get = "/eeta/billboards";
+  
   }
 }
-
 message ListBillboardRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
 message ListBillboardResponse {
+  
   // params holds all the parameters of this module.
-  repeated Billboard billboards = 1 [(gogoproto.nullable) = false];
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  repeated Billboard                              billboards = 1 [(gogoproto.nullable) = false];
+           cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message QueryParamsRequest {}
@@ -37,3 +41,13 @@ message QueryParamsRequest {}
 message QueryParamsResponse {
   Params params = 1 [(gogoproto.nullable) = false];
 }
+
+message QueryListBillboardRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryListBillboardResponse {
+  repeated Billboard                              billboard  = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+

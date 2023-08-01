@@ -1,4 +1,5 @@
 syntax = "proto3";
+
 package eeta.billboard;
 
 import "eeta/billboard/billboard.proto";
@@ -9,17 +10,16 @@ option go_package = "eeta/x/billboard/types";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc CreateBillboard(MsgCreateBillboardRequest) returns (MsgCreateBillboardResponse) {}
+  rpc CreateBillboard (MsgCreateBillboard) returns (MsgCreateBillboardResponse);
+}
+message MsgCreateBillboard {
+  string                   creator     = 1;
+  string                   name        = 2;
+  string                   description = 3;
+  string                   url         = 4;
+  string                   boardType   = 5;
+  cosmos.base.v1beta1.Coin minPrice    = 6 [(gogoproto.nullable) = false];
 }
 
-message MsgCreateBillboardRequest {
-    string name = 1;
-    string description = 2;
-    string url = 3;
-    BillboardType type = 4;
-    cosmos.base.v1beta1.Coin min_price = 5 [(gogoproto.nullable) = false];
-}
+message MsgCreateBillboardResponse {}
 
-message MsgCreateBillboardResponse {
-    uint64 id =1;
-}

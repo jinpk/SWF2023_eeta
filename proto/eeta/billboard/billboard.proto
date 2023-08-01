@@ -14,11 +14,6 @@ message Billboard {
     string name = 3;
     string description = 4;
     string url = 5;
-    BillboardType type = 6;
+    string board_type = 6;
     cosmos.base.v1beta1.Coin min_price = 7 [(gogoproto.nullable) = false];
-}
-
-enum BillboardType {
-    ONLINE = 0;
-    OFFLINE = 1;
 }
