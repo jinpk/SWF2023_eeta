@@ -12,7 +12,7 @@ var _ paramtypes.ParamSet = (*Params)(nil)
 var (
 	KeyWaitBlock = []byte("WaitBlock")
 	// TODO: Determine the default value
-	DefaultWaitBlock uint64 = 0
+	DefaultWaitBlock uint64 = 10
 )
 
 // ParamKeyTable the param key table for launch module
