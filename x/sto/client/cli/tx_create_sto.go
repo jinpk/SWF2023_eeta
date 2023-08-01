@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"eeta/x/sto/types"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -26,11 +27,11 @@ func CmdCreateSto() *cobra.Command {
 			argOrganizerUrl := args[1]
 			argOrganizerImageUrl := args[2]
 			argName := args[3]
-			argStart, err := cast.ToInt32E(args[4])
+			argStart, err := cast.ToInt64E(args[4])
 			if err != nil {
 				return err
 			}
-			argEnd, err := cast.ToInt32E(args[5])
+			argEnd, err := cast.ToInt64E(args[5])
 			if err != nil {
 				return err
 			}

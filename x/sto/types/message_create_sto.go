@@ -9,7 +9,7 @@ const TypeMsgCreateSto = "create_sto"
 
 var _ sdk.Msg = &MsgCreateSto{}
 
-func NewMsgCreateSto(creator string, billboardId uint64, organizerUrl string, organizerImageUrl string, name string, start int32, end int32, userShare int32, organizerShare int32) *MsgCreateSto {
+func NewMsgCreateSto(creator string, billboardId uint64, organizerUrl string, organizerImageUrl string, name string, start int64, end int64, userShare int32, organizerShare int32) *MsgCreateSto {
 	return &MsgCreateSto{
 		Creator:           creator,
 		BillboardId:       billboardId,
