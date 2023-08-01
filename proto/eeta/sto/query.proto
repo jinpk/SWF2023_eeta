@@ -1,26 +1,47 @@
 syntax = "proto3";
+
 package eeta.sto;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "eeta/sto/params.proto";
+import "eeta/sto/sto.proto";
 
 option go_package = "eeta/x/sto/types";
 
 // Query defines the gRPC querier service.
 service Query {
+  
   // Parameters queries the parameters of the module.
-  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/eeta/sto/params";
+  
+  }
+  
+  // Queries a list of ListSto items.
+  rpc ListSto (QueryListStoRequest) returns (QueryListStoResponse) {
+    option (google.api.http).get = "/eeta/sto/list_sto/{billboardId}";
+  
   }
 }
-
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
+  
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
 }
+
+message QueryListStoRequest {
+  uint64                                billboardId = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination  = 2;
+}
+
+message QueryListStoResponse {
+  repeated Sto                                    stos       = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
