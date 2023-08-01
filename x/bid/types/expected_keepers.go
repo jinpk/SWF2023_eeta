@@ -15,6 +15,7 @@ type AccountKeeper interface {
 
 type BillboardKeeper interface {
 	GetOwnerAddress(ctx sdk.Context, billboardId uint64) sdk.AccAddress
+	Has(ctx sdk.Context, billboardID uint64) bool
 }
 
 // BankKeeper defines the expected interface needed to retrieve account balances.

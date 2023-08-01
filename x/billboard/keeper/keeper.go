@@ -67,3 +67,8 @@ func (k Keeper) GetNextBillboardId(ctx sdk.Context) uint64 {
 
 	return count
 }
+
+func (k Keeper) Has(ctx sdk.Context, billboardID uint64) bool {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.BillboardKey))
+	return store.Has(types.GetBillboardIDBytes(billboardID))
+}

@@ -42,16 +42,13 @@ func NewKeeper(
 		ps = ps.WithKeyTable(types.ParamKeyTable())
 	}
 
-	if addr := ak.GetModuleAddress(types.ModuleName); addr == nil {
-		panic("the claidrop module account has not been set")
-	}
-
 	return &Keeper{
 		cdc:        cdc,
 		storeKey:   storeKey,
 		memKey:     memKey,
-		paramstore: ps, ak: ak,
-		bk: bk, dk: dk,
+		paramstore: ps,
+		ak:         ak,
+		bk:         bk, dk: dk,
 	}
 }
 
@@ -77,7 +74,6 @@ func (k Keeper) CreateModuleAccount(ctx sdk.Context) {
 	moduleAcc := authtypes.NewEmptyModuleAccount(types.ModuleName, authtypes.Minter)
 
 	k.ak.SetModuleAccount(ctx, moduleAcc)
-
 }
 
 func (k Keeper) ListUnBiddedAuctions(ctx sdk.Context) (auctions []types.Auction) {

@@ -5,6 +5,7 @@ import (
 
 	testkeeper "eeta/testutil/keeper"
 	"eeta/x/deposit/types"
+
 	"github.com/stretchr/testify/require"
 )
 

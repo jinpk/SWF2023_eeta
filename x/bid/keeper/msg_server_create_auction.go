@@ -6,6 +6,7 @@ import (
 
 	"eeta/x/bid/types"
 
+	billboardtypes "eeta/x/billboard/types"
 	deposittypes "eeta/x/deposit/types"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
@@ -27,6 +28,7 @@ func (k msgServer) CreateAuction(goCtx context.Context, msg *types.MsgCreateAuct
 
 	params := k.GetParams(ctx)
 	blockGenSecond := 10 // TODO: 블록 생성 시간 계산 필요
+	// 공백 사간 필요
 	if now.Add(time.Second * time.Duration(int(params.WaitBlock)*blockGenSecond)).After(startTime) {
 		return nil, types.ErrRequireSpaceTime
 	}
@@ -35,6 +37,10 @@ func (k msgServer) CreateAuction(goCtx context.Context, msg *types.MsgCreateAuct
 	has := k.bk.GetBalance(ctx, creatorAddr, deposittypes.StableCoinDenom)
 	if has.Amount.LT(msg.Amount.Amount) {
 		return nil, types.ErrInsufientBalance
+	}
+
+	if !k.dk.Has(ctx, msg.BillboardId) {
+		return nil, billboardtypes.ErrNotFoundBillboard
 	}
 
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.GetAuctionKeyPrefix(msg.BillboardId))

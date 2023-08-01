@@ -34934,26 +34934,28 @@ paths:
             type: object
             properties:
               auctions:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    format: uint64
-                    title: unique within billboard_id
-                  billboard_id:
-                    type: string
-                    format: uint64
-                  start:
-                    type: string
-                    format: uint64
-                    title: utc unix
-                  end:
-                    type: string
-                    format: uint64
-                    title: utc unix
-                  bidder_address:
-                    type: string
-                    title: 낙찰성공
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uint64
+                      title: unique within billboard_id
+                    billboard_id:
+                      type: string
+                      format: uint64
+                    start:
+                      type: string
+                      format: uint64
+                      title: utc unix
+                    end:
+                      type: string
+                      format: uint64
+                      title: utc unix
+                    bidder_address:
+                      type: string
+                      title: 낙찰성공
               pagination:
                 type: object
                 properties:
@@ -35075,28 +35077,34 @@ paths:
             type: object
             properties:
               bids:
-                type: object
-                properties:
-                  sender_address:
-                    type: string
-                  amount:
-                    type: object
-                    properties:
-                      denom:
-                        type: string
-                      amount:
-                        type: string
-                    description: >-
-                      Coin defines a token with a denomination and an amount.
+                type: array
+                items:
+                  type: object
+                  properties:
+                    sender_address:
+                      type: string
+                    amount:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
 
 
-                      NOTE: The amount field is an Int which implements the
-                      custom method
+                        NOTE: The amount field is an Int which implements the
+                        custom method
 
-                      signatures required by gogoproto.
-                  ad_url:
-                    type: string
-                    title: 송출원하는 미디어
+                        signatures required by gogoproto.
+                    ad_url:
+                      type: string
+                      title: 송출원하는 미디어
+                    height:
+                      type: string
+                      format: uint64
+                      title: 비딩 height
               pagination:
                 type: object
                 properties:
@@ -71163,6 +71171,10 @@ definitions:
       ad_url:
         type: string
         title: 송출원하는 미디어
+      height:
+        type: string
+        format: uint64
+        title: 비딩 height
   eeta.bid.MsgBiddingResponse:
     type: object
   eeta.bid.MsgCreateAuctionResponse:
@@ -71182,26 +71194,28 @@ definitions:
     type: object
     properties:
       auctions:
-        type: object
-        properties:
-          id:
-            type: string
-            format: uint64
-            title: unique within billboard_id
-          billboard_id:
-            type: string
-            format: uint64
-          start:
-            type: string
-            format: uint64
-            title: utc unix
-          end:
-            type: string
-            format: uint64
-            title: utc unix
-          bidder_address:
-            type: string
-            title: 낙찰성공
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uint64
+              title: unique within billboard_id
+            billboard_id:
+              type: string
+              format: uint64
+            start:
+              type: string
+              format: uint64
+              title: utc unix
+            end:
+              type: string
+              format: uint64
+              title: utc unix
+            bidder_address:
+              type: string
+              title: 낙찰성공
       pagination:
         type: object
         properties:
@@ -71232,28 +71246,34 @@ definitions:
     type: object
     properties:
       bids:
-        type: object
-        properties:
-          sender_address:
-            type: string
-          amount:
-            type: object
-            properties:
-              denom:
-                type: string
-              amount:
-                type: string
-            description: >-
-              Coin defines a token with a denomination and an amount.
+        type: array
+        items:
+          type: object
+          properties:
+            sender_address:
+              type: string
+            amount:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
 
 
-              NOTE: The amount field is an Int which implements the custom
-              method
+                NOTE: The amount field is an Int which implements the custom
+                method
 
-              signatures required by gogoproto.
-          ad_url:
-            type: string
-            title: 송출원하는 미디어
+                signatures required by gogoproto.
+            ad_url:
+              type: string
+              title: 송출원하는 미디어
+            height:
+              type: string
+              format: uint64
+              title: 비딩 height
       pagination:
         type: object
         properties:
