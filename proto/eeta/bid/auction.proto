@@ -7,6 +7,8 @@ import "gogoproto/gogo.proto";
 
 option go_package = "eeta/x/bid/types";
 
+// 옥션 생성은 fe에서 1시간 단위로 묶어서 
+
 message Auction {
     uint64 id = 1; // unique within billboard_id
     uint64 billboard_id = 2; 

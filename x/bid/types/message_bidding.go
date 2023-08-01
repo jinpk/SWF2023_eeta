@@ -9,12 +9,13 @@ const TypeMsgBidding = "bidding"
 
 var _ sdk.Msg = &MsgBidding{}
 
-func NewMsgBidding(creator string, auctionId uint64, amount sdk.Coin, adUrl string) *MsgBidding {
+func NewMsgBidding(creator string, billboardId uint64, auctionId uint64, amount sdk.Coin, adUrl string) *MsgBidding {
 	return &MsgBidding{
-		Creator:   creator,
-		AuctionId: auctionId,
-		Amount:    amount,
-		AdUrl:     adUrl,
+		Creator:     creator,
+		BillboardId: billboardId,
+		AuctionId:   auctionId,
+		Amount:      amount,
+		AdUrl:       adUrl,
 	}
 }
 

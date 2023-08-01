@@ -28,6 +28,7 @@ message MsgBidding {
   uint64                   auctionId = 2;
   cosmos.base.v1beta1.Coin amount    = 3 [(gogoproto.nullable) = false];
   string                   adUrl     = 4;
+  uint64                   billboardId = 5;
 }
 
 message MsgBiddingResponse {}
