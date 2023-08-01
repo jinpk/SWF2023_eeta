@@ -14,7 +14,7 @@ func (k msgServer) Burn(goCtx context.Context, msg *types.MsgBurn) (*types.MsgBu
 	burnedAddress := sdk.MustAccAddressFromBech32(msg.BurnedAddress)
 
 	// 권한체크
-	minterAddress := sdk.MustAccAddressFromBech32(msg.Creator)
+	minterAddress := sdk.MustAccAddressFromBech32(msg.Sender)
 	if err := k.assertMinter(ctx, minterAddress); err != nil {
 		return nil, types.ErrUnauthMint
 	}

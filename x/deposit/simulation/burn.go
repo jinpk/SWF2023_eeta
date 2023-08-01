@@ -5,6 +5,7 @@ import (
 
 	"eeta/x/deposit/keeper"
 	"eeta/x/deposit/types"
+
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
@@ -19,7 +20,7 @@ func SimulateMsgBurn(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 		msg := &types.MsgBurn{
-			Creator: simAccount.Address.String(),
+			Sender: simAccount.Address.String(),
 		}
 
 		// TODO: Handling the Burn simulation

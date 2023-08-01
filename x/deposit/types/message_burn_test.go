@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"eeta/testutil/sample"
+
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
 )
@@ -17,13 +18,13 @@ func TestMsgBurn_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgBurn{
-				Creator: "invalid_address",
+				Sender: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgBurn{
-				Creator: sample.AccAddress(),
+				Sender: sample.AccAddress(),
 			},
 		},
 	}

@@ -11,7 +11,7 @@ var _ sdk.Msg = &MsgBurn{}
 
 func NewMsgBurn(creator string, amount sdk.Coin, burnedAddress string) *MsgBurn {
 	return &MsgBurn{
-		Creator:       creator,
+		Sender:        creator,
 		Amount:        amount,
 		BurnedAddress: burnedAddress,
 	}
@@ -26,7 +26,7 @@ func (msg *MsgBurn) Type() string {
 }
 
 func (msg *MsgBurn) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	creator, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		panic(err)
 	}
@@ -39,7 +39,7 @@ func (msg *MsgBurn) GetSignBytes() []byte {
 }
 
 func (msg *MsgBurn) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
