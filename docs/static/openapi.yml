@@ -35499,80 +35499,82 @@ paths:
             type: object
             properties:
               stos:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    format: uint64
-                  billboard_id:
-                    type: string
-                    format: uint64
-                  organizer_address:
-                    type: string
-                    title: 운영자 주소
-                  organizer_url:
-                    type: string
-                    title: 운영자 url
-                  organizer_image_url:
-                    type: string
-                    title: 운영자 썸네일
-                  name:
-                    type: string
-                    title: sto name
-                  start:
-                    type: string
-                    format: int64
-                    title: billbboard start
-                  end:
-                    type: string
-                    format: int64
-                    title: billbboard end
-                  user_share:
-                    type: integer
-                    format: int32
-                    title: STO 참여자 지분
-                  organizer_share:
-                    type: integer
-                    format: int32
-                    title: |-
-                      STO 운영자 지분 10% > 0.1
-                      STO 생성시 share 코인 펀딩
-                  goal:
-                    title: |-
-                      펀딩 목표 금액
-                      STO 생성 시 빌보드 최저낙찰가와 start, end 계산
-                    type: object
-                    properties:
-                      denom:
-                        type: string
-                      amount:
-                        type: string
-                    description: >-
-                      Coin defines a token with a denomination and an amount.
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uint64
+                    billboard_id:
+                      type: string
+                      format: uint64
+                    organizer_address:
+                      type: string
+                      title: 운영자 주소
+                    organizer_url:
+                      type: string
+                      title: 운영자 url
+                    organizer_image_url:
+                      type: string
+                      title: 운영자 썸네일
+                    name:
+                      type: string
+                      title: sto name
+                    start:
+                      type: string
+                      format: int64
+                      title: billbboard start
+                    end:
+                      type: string
+                      format: int64
+                      title: billbboard end
+                    user_share:
+                      type: integer
+                      format: int32
+                      title: STO 참여자 지분
+                    organizer_share:
+                      type: integer
+                      format: int32
+                      title: |-
+                        STO 운영자 지분 10% > 0.1
+                        STO 생성시 share 코인 펀딩
+                    goal:
+                      title: |-
+                        펀딩 목표 금액
+                        STO 생성 시 빌보드 최저낙찰가와 start, end 계산
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
 
 
-                      NOTE: The amount field is an Int which implements the
-                      custom method
+                        NOTE: The amount field is an Int which implements the
+                        custom method
 
-                      signatures required by gogoproto.
-                  funded:
-                    type: object
-                    properties:
-                      denom:
-                        type: string
-                      amount:
-                        type: string
-                    description: >-
-                      Coin defines a token with a denomination and an amount.
+                        signatures required by gogoproto.
+                    funded:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
 
 
-                      NOTE: The amount field is an Int which implements the
-                      custom method
+                        NOTE: The amount field is an Int which implements the
+                        custom method
 
-                      signatures required by gogoproto.
-                  sto_address:
-                    type: string
-                    title: sto 펀드 address
+                        signatures required by gogoproto.
+                    sto_address:
+                      type: string
+                      title: sto 펀드 address
               pagination:
                 type: object
                 properties:
@@ -71621,6 +71623,8 @@ definitions:
       params:
         type: object
         description: Params defines the parameters for the module.
+  eeta.deposit.MsgBurnResponse:
+    type: object
   eeta.deposit.MsgMintResponse:
     type: object
   eeta.deposit.Params:
@@ -71650,80 +71654,82 @@ definitions:
     type: object
     properties:
       stos:
-        type: object
-        properties:
-          id:
-            type: string
-            format: uint64
-          billboard_id:
-            type: string
-            format: uint64
-          organizer_address:
-            type: string
-            title: 운영자 주소
-          organizer_url:
-            type: string
-            title: 운영자 url
-          organizer_image_url:
-            type: string
-            title: 운영자 썸네일
-          name:
-            type: string
-            title: sto name
-          start:
-            type: string
-            format: int64
-            title: billbboard start
-          end:
-            type: string
-            format: int64
-            title: billbboard end
-          user_share:
-            type: integer
-            format: int32
-            title: STO 참여자 지분
-          organizer_share:
-            type: integer
-            format: int32
-            title: |-
-              STO 운영자 지분 10% > 0.1
-              STO 생성시 share 코인 펀딩
-          goal:
-            title: |-
-              펀딩 목표 금액
-              STO 생성 시 빌보드 최저낙찰가와 start, end 계산
-            type: object
-            properties:
-              denom:
-                type: string
-              amount:
-                type: string
-            description: >-
-              Coin defines a token with a denomination and an amount.
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uint64
+            billboard_id:
+              type: string
+              format: uint64
+            organizer_address:
+              type: string
+              title: 운영자 주소
+            organizer_url:
+              type: string
+              title: 운영자 url
+            organizer_image_url:
+              type: string
+              title: 운영자 썸네일
+            name:
+              type: string
+              title: sto name
+            start:
+              type: string
+              format: int64
+              title: billbboard start
+            end:
+              type: string
+              format: int64
+              title: billbboard end
+            user_share:
+              type: integer
+              format: int32
+              title: STO 참여자 지분
+            organizer_share:
+              type: integer
+              format: int32
+              title: |-
+                STO 운영자 지분 10% > 0.1
+                STO 생성시 share 코인 펀딩
+            goal:
+              title: |-
+                펀딩 목표 금액
+                STO 생성 시 빌보드 최저낙찰가와 start, end 계산
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
 
 
-              NOTE: The amount field is an Int which implements the custom
-              method
+                NOTE: The amount field is an Int which implements the custom
+                method
 
-              signatures required by gogoproto.
-          funded:
-            type: object
-            properties:
-              denom:
-                type: string
-              amount:
-                type: string
-            description: >-
-              Coin defines a token with a denomination and an amount.
+                signatures required by gogoproto.
+            funded:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
 
 
-              NOTE: The amount field is an Int which implements the custom
-              method
+                NOTE: The amount field is an Int which implements the custom
+                method
 
-              signatures required by gogoproto.
-          sto_address:
-            type: string
-            title: sto 펀드 address
+                signatures required by gogoproto.
+            sto_address:
+              type: string
+              title: sto 펀드 address
       pagination:
         type: object
         properties:

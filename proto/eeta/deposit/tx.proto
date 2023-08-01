@@ -9,12 +9,21 @@ option go_package = "eeta/x/deposit/types";
 
 service Msg {
   rpc mint (MsgMint) returns (MsgMintResponse);
+  rpc Burn (MsgBurn) returns (MsgBurnResponse);
 }
-
 message MsgMint {
-  string sender = 1;
-  string receipient_address = 2;
-  cosmos.base.v1beta1.Coin coin = 3 [(gogoproto.nullable) = false];
+  string                   sender             = 1;
+  string                   receipient_address = 2;
+  cosmos.base.v1beta1.Coin coin               = 3 [(gogoproto.nullable) = false];
 }
 
 message MsgMintResponse {}
+
+message MsgBurn {
+  string                   sender       = 1;
+  string                   burnedAddress = 2;
+  cosmos.base.v1beta1.Coin amount        = 3 [(gogoproto.nullable) = false];
+}
+
+message MsgBurnResponse {}
+

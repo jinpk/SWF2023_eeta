@@ -194,7 +194,7 @@ var (
 		distrtypes.ModuleName:          nil,
 		icatypes.ModuleName:            nil,
 		bidmoduletypes.ModuleName:      nil,
-		depositmoduletypes.ModuleName:  {authtypes.Minter},
+		depositmoduletypes.ModuleName:  {authtypes.Minter, authtypes.Burner},
 		stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
 		govtypes.ModuleName:            {authtypes.Burner},
