@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { useState } from 'react';
+import { useState,useEffect} from 'react';
 // @mui
 import {
   Card,
@@ -28,9 +28,7 @@ import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
 // sections
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
-// mock
-import USERLIST from '../_mock/ad';
-
+import { StargateClient } from '@cosmjs/stargate';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -73,6 +71,26 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function MyBillboardPage() {
+  const [billboards, setBillboards] = useState([]);
+   
+  const account = window.cosmostation.cosmos.request({
+    method: "cos_account",
+    params: { chainName: "eeta" },
+  });       
+
+  useEffect(() => {
+    async function fetchBillboards() {
+      try {
+        const response = await fetch('http://10.0.14.188:1317/eeta/billboards');
+        const data = await response.json();
+        setBillboards(data.billboard);
+      } catch (error) {
+        console.error('Error fetching billboards:', error);
+      }
+    }
+
+    fetchBillboards();
+  }, []);
   const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);
@@ -93,21 +111,6 @@ export default function MyBillboardPage() {
 
   const handleCloseMenu = () => {
     setOpen(null);
-  };
-
-  const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
-  };
-
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelecteds = USERLIST.map((n) => n.name);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
   };
 
   const handleClick = (event, name) => {
@@ -134,44 +137,50 @@ export default function MyBillboardPage() {
     setRowsPerPage(parseInt(event.target.value, 10));
   };
 
-  const handleFilterByName = (event) => {
-    setPage(0);
-    setFilterName(event.target.value);
-  };
-
-  const siweSign = async (siweMessage) => {
-    try {    
-      const accounts = await window.ethereum.request({ 
-        method: "eth_requestAccounts",                
-      })                                  
-      const from = accounts[0];
-      const msg = `0x${Buffer.from(siweMessage, 'utf8').toString('hex')}`;
-      const sign = await window.ethereum.request({
-        method: 'personal_sign',
-        params: [msg, from],
-      });
-      console.log(sign);
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   const handleSign = async () => {
-    const domain = window.location.host;    
-    const accounts = await window.ethereum.request({ 
-      method: "eth_requestAccounts",                
-    })                                  
-    const from = accounts[0];
-    const siweMessage = `${domain} wants you to sign in with your Ethereum account:\n${from}\n\nI accept the MetaMask Terms of Service: https://community.metamask.io/tos\n\nURI: https://${domain}\nVersion: 1\nChain ID: 1\nNonce: 32891757\nIssued At: 2021-09-30T16:25:24.000Z`;
-
-    siweSign(siweMessage);
+    const aa = await fetch('http://10.0.14.188:1317/cosmos/auth/v1beta1/accounts/eeta1syvj993c6q256pcggndffp6ucpn69g3h0pwe3g');
+    const account = await aa.json()
+const seq = account.account.sequence
+const an = account.account.account_number
+    const response = await window.cosmostation.cosmos.request({
+      method: "cos_signAmino",
+      params: {
+        chainName: "eeta",
+        doc: {
+          chain_id: "eeta",
+          fee: { amount: [{ denom: "stake", amount: "5000" }], gas: "200000" },
+          memo: "",
+          msgs: [
+            {
+              type: "/eeta.billboard.MsgCreateBillboard",
+              value: {
+                board_type: "online",
+                name: "Naver",
+                description: "Naver",
+                url: "https://naver.com",
+                final_bid_price_per_minute: [{ denom: "krw", amount: "1000000" }],
+              },
+            },
+          ],
+          sequence: seq,
+          account_number: an,
+        },
+      },
+    });
+    const signed = response.signed_doc;
+            const {signature} = response;
+            const client = new StargateClient('http://10.0.14.188:1317');
+            console.log(response);
+            client.broadcastTx({
+              msg: signed.msgs,
+              fee: signed.fee,
+              signatures: [signature],
+              memo: signed.memo,
+            });
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length) : 0;
-
-  const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
-
-  const isNotFound = !filteredUsers.length && !!filterName;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - billboards.length) : 0;
 
   return (
     <>
@@ -198,13 +207,11 @@ export default function MyBillboardPage() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={USERLIST.length}
+                  rowCount={billboards.length}
                   numSelected={selected.length}
-                  onRequestSort={handleRequestSort}
-                  onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                  {billboards.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                     const { id, name, role, status, company, avatarUrl, isVerified } = row;
                     const selectedUser = selected.indexOf(name) !== -1;
 
@@ -226,7 +233,7 @@ export default function MyBillboardPage() {
                         <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
 
                         <TableCell align="left">
-                          <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label>
+                          <Label color={'success'}>{status}</Label>
                         </TableCell>
 
                       </TableRow>
@@ -238,30 +245,6 @@ export default function MyBillboardPage() {
                     </TableRow>
                   )}
                 </TableBody>
-
-                {isNotFound && (
-                  <TableBody>
-                    <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                        <Paper
-                          sx={{
-                            textAlign: 'center',
-                          }}
-                        >
-                          <Typography variant="h6" paragraph>
-                            Not found
-                          </Typography>
-
-                          <Typography variant="body2">
-                            No results found for &nbsp;
-                            <strong>&quot;{filterName}&quot;</strong>.
-                            <br /> Try checking for typos or using complete words.
-                          </Typography>
-                        </Paper>
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                )}
               </Table>
             </TableContainer>
           </Scrollbar>
@@ -269,7 +252,7 @@ export default function MyBillboardPage() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={USERLIST.length}
+            count={billboards.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

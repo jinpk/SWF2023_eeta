@@ -13,7 +13,7 @@ const navConfig = [
   },
 
   {
-    title: '광고 입찰하기',
+    title: '광고 목록',
     path: '/dashboard/billboard',
     icon: icon('ic_cart'),
   },

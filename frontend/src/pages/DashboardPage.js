@@ -58,16 +58,11 @@ export default function DashboardAppPage() {
             <AppConversionRates
               title="진행중인 STO"
               chartData={[
-                { label: 'Italy', value: 400 },
-                { label: 'Japan', value: 430 },
-                { label: 'China', value: 448 },
-                { label: 'Canada', value: 470 },
-                { label: 'France', value: 540 },
-                { label: 'Germany', value: 580 },
-                { label: 'South Korea', value: 690 },
-                { label: 'Netherlands', value: 1100 },
-                { label: 'United States', value: 1200 },
-                { label: 'United Kingdom', value: 1380 },
+                { label: '서울시 구의역 지하철 광고', value: 80 },
+                { label: '서울시청 광고', value: 87 },
+                { label: '서장훈 전광판', value: 67 },
+                { label: 'DDP a1구역', value: 95 },
+                { label: '유투브 - 뻐꾸기 골프', value: 39 },
               ]}
             />
           </Grid>
@@ -109,13 +104,28 @@ export default function DashboardAppPage() {
 <Grid item xs={12} md={6} lg={8}>
   <AppNewsUpdate
     title="인기 광고"
-    list={[...Array(5)].map((_, index) => ({
-      id: faker.datatype.uuid(),
-      title: faker.name.jobTitle(),
-      description: faker.name.jobTitle(),
-      image: `/assets/images/covers/cover_${index + 1}.jpg`,
-      postedAt: faker.date.recent(),
-    }))}
+    list={[{id: 1,
+      title: "전광판",
+      description: "옥외광고",
+      image: `/assets/images/covers/cover_1.jpg`,
+      postedAt: faker.date.recent(),}, {id: 1,
+        title: "전광판",
+        description: "옥외광고",
+        image: `/assets/images/covers/cover_1.jpg`,
+        postedAt: faker.date.recent(),}, {id: 1,
+          title: "전광판",
+          description: "옥외광고",
+          image: `/assets/images/covers/cover_1.jpg`,
+          postedAt: faker.date.recent(),}, {id: 1,
+            title: "전광판",
+            description: "옥외광고",
+            image: `/assets/images/covers/cover_1.jpg`,
+            postedAt: faker.date.recent(),}, {id: 1,
+      title: "전광판",
+      description: "옥외광고",
+      image: `/assets/images/covers/cover_1.jpg`,
+      postedAt: faker.date.recent(),}, 
+    ]}
   />
 </Grid>
 

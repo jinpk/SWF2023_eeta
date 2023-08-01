@@ -38,28 +38,14 @@ Nav.propTypes = {
 
 export default function Nav({ openNav, onCloseNav }) {
   const { pathname } = useLocation();
-  const [hasProvider, setHasProvider] = useState(null)
-  const initialState = { accounts: [] }              
-  const [wallet, setWallet] = useState(initialState) 
-
-  useEffect(() => {
-    const getProvider = async () => {
-      const provider = await detectEthereumProvider({ silent: true })
-      setHasProvider(Boolean(provider))
-    }
-
-    getProvider()
-  }, [])
-
-  const updateWallet = async (accounts) => {  
-    setWallet({ accounts })                   
-  }                                           
+  const [wallet, setWallet] = useState() 
 
   const handleConnect = async () => {         
-    const accounts = await window.ethereum.request({ 
-      method: "eth_requestAccounts",                
-    })                                              
-    updateWallet(accounts)                          
+    const accounts = await window.cosmostation.cosmos.request({
+      method: "cos_account",
+      params: { chainName: "eeta" },
+    });       
+    setWallet(accounts)                          
   }                     
 
   const isDesktop = useResponsive('up', 'lg');
@@ -81,7 +67,7 @@ export default function Nav({ openNav, onCloseNav }) {
       <Box sx={{ px: 2.5, py: 3, display: 'inline-flex' }}>
         <Logo />
       </Box>
-      { hasProvider && wallet.accounts.length === 0 &&                               
+      { !wallet &&                               
         <Box sx={{ mb: 5, mx: 2.5 }} onClick={handleConnect}>
           <Link underline="none">
             <StyledAccount>
@@ -97,7 +83,7 @@ export default function Nav({ openNav, onCloseNav }) {
         </Box>
       }
       
-      { wallet.accounts.length > 0 &&                
+      { wallet &&                
         <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none">
           <StyledAccount>
@@ -109,7 +95,7 @@ export default function Nav({ openNav, onCloseNav }) {
               </Typography>
 
               <Typography variant="body2" sx={{ color: 'text.secondary', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', width: '140px' }}>
-                {wallet.accounts[0]}
+                {wallet.address}
               </Typography>
             </Box>
           </StyledAccount>
