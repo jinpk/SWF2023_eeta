@@ -12,6 +12,8 @@ const (
 
 	// MemStoreKey defines the in-memory store key
 	MemStoreKey = "mem_deposit"
+
+	StableCoinDenom = "krw"
 )
 
 func KeyPrefix(p string) []byte {
