@@ -121,6 +121,7 @@ import (
 	bidmodule "eeta/x/bid"
 	bidmodulekeeper "eeta/x/bid/keeper"
 	bidmoduletypes "eeta/x/bid/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	appparams "eeta/app/params"
@@ -557,6 +558,9 @@ func New(
 		keys[bidmoduletypes.StoreKey],
 		keys[bidmoduletypes.MemStoreKey],
 		app.GetSubspace(bidmoduletypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.BillboardKeeper,
 	)
 	bidModule := bidmodule.NewAppModule(appCodec, app.BidKeeper, app.AccountKeeper, app.BankKeeper)
 

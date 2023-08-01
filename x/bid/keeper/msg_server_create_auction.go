@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"time"
 
 	"eeta/x/bid/types"
 
@@ -15,6 +16,20 @@ func (k msgServer) CreateAuction(goCtx context.Context, msg *types.MsgCreateAuct
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	creatorAddr, _ := sdk.AccAddressFromBech32(msg.Creator)
+
+	now := time.Now()
+	startTime := time.Unix(int64(msg.Start), 0)
+
+	// 이전 시간 생성 불가
+	if startTime.Before(now) {
+		return nil, types.ErrBeforeTime
+	}
+
+	params := k.GetParams(ctx)
+	blockGenSecond := 10 // TODO: 블록 생성 시간 계산 필요
+	if now.Add(time.Second * time.Duration(int(params.WaitBlock)*blockGenSecond)).After(startTime) {
+		return nil, types.ErrRequireSpaceTime
+	}
 
 	// 낙찰 희망 가격 잔고 확인
 	has := k.bk.GetBalance(ctx, creatorAddr, deposittypes.StableCoinDenom)
@@ -58,6 +73,7 @@ func (k msgServer) CreateAuction(goCtx context.Context, msg *types.MsgCreateAuct
 		SenderAddress: msg.Creator,
 		Amount:        msg.Amount,
 		AdUrl:         msg.AdUrl,
+		Height:        uint64(ctx.BlockHeight()),
 	}
 
 	bidBz := k.cdc.MustMarshal(&bid)
@@ -65,6 +81,11 @@ func (k msgServer) CreateAuction(goCtx context.Context, msg *types.MsgCreateAuct
 	auctionStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.GetBidKeyPrefix(msg.BillboardId, auction.Id))
 
 	auctionStore.Set(creatorAddr, bidBz)
+
+	// 모듈 어카운트에 전송
+	if err := k.bk.SendCoinsFromAccountToModule(ctx, creatorAddr, types.ModuleName, sdk.NewCoins(bid.Amount)); err != nil {
+		return nil, types.ErrDepositFailed
+	}
 
 	return &types.MsgCreateAuctionResponse{}, nil
 }

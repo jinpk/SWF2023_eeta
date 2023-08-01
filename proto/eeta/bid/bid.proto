@@ -12,4 +12,5 @@ message Bid {
     cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false];
     // 송출원하는 미디어 
     string ad_url = 3;
+    uint64 height = 4; // 비딩 height
 }
