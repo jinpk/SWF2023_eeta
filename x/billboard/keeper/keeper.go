@@ -5,6 +5,7 @@ import (
 
 	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/store/prefix"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
@@ -42,4 +43,27 @@ func NewKeeper(
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
+}
+
+func (k Keeper) GetOwnerAddress(ctx sdk.Context, billboardId uint64) sdk.AccAddress {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.BillboardKey))
+	bz := store.Get(types.GetBillboardIDBytes(billboardId))
+	var billboard types.Billboard
+	k.cdc.MustUnmarshal(bz, &billboard)
+
+	return sdk.MustAccAddressFromBech32(billboard.OwnerAddress)
+}
+
+func (k Keeper) GetNextBillboardId(ctx sdk.Context) uint64 {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.BillboardKey))
+
+	iterator := store.Iterator(nil, nil)
+	defer iterator.Close()
+
+	var count uint64 = 1
+	for ; iterator.Valid(); iterator.Next() {
+		count++
+	}
+
+	return count
 }

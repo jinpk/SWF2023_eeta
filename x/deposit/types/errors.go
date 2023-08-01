@@ -8,5 +8,6 @@ import (
 
 // x/deposit module sentinel errors
 var (
-	ErrSample = sdkerrors.Register(ModuleName, 1100, "sample error")
+	ErrUnauthMint = sdkerrors.Register(ModuleName, 1, "unauthorized sender address for minter")
+	ErrSample     = sdkerrors.Register(ModuleName, 1100, "sample error")
 )

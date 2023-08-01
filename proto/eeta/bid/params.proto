@@ -1,0 +1,15 @@
+syntax = "proto3";
+package eeta.bid;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "eeta/x/bid/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (gogoproto.goproto_stringer) = false;
+  
+  // 1. a 입찰 시작
+  // 2. cur_block + wait_block까지 신규 입찰 안나오면 a에게 낙찰
+  uint64 wait_block = 1 [(gogoproto.moretags) = "yaml:\"wait_block\""]; // 낙찰 대기 블록
+}

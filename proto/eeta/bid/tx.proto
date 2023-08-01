@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package eeta.bid;
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "eeta/x/bid/types";
+
+// Msg defines the Msg service.
+service Msg {
+  rpc CreateAuction (MsgCreateAuction) returns (MsgCreateAuctionResponse);
+  rpc Bidding       (MsgBidding      ) returns (MsgBiddingResponse      );
+}
+message MsgCreateAuction {
+  string                   creator     = 1;
+  uint64                   billboardId = 2;
+  uint64                   start       = 3;
+  uint64                   end         = 4;
+  cosmos.base.v1beta1.Coin amount      = 5 [(gogoproto.nullable) = false];
+  string                   adUrl       = 6;
+}
+
+message MsgCreateAuctionResponse {}
+
+message MsgBidding {
+  string                   creator   = 1;
+  uint64                   auctionId = 2;
+  cosmos.base.v1beta1.Coin amount    = 3 [(gogoproto.nullable) = false];
+  string                   adUrl     = 4;
+  uint64                   billboardId = 5;
+}
+
+message MsgBiddingResponse {}
+

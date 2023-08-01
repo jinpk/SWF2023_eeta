@@ -1,0 +1,16 @@
+syntax = "proto3";
+package eeta.bid;
+
+import "eeta/bid/params.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "eeta/x/bid/types";
+
+message Bid {
+    string sender_address = 1;
+    cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false];
+    // 송출원하는 미디어 
+    string ad_url = 3;
+    uint64 height = 4; // 비딩 height
+}
