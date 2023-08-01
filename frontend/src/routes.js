@@ -5,7 +5,8 @@ import SimpleLayout from './layouts/simple';
 //
 import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
-import NewNpoPage from './pages/AddBillboardPage';
+import AddBillboardPage from './pages/AddBillboardPage';
+import AddStoPage from './pages/AddStoPage';
 import DashboardAppPage from './pages/DashboardPage';
 import DepositPage from './pages/DepositPage';
 import WalletPage from './pages/WalletPage';
@@ -14,8 +15,10 @@ import BillboardPage from './pages/BillboardPage';
 import BidPage from './pages/BidPage';
 import StoPage from './pages/StoPage';
 import DetailBillboardPage from './pages/DetailBillboardPage';
+import DetailStoPage from './pages/DetailStoPage';
 import MyBillboardPage from './pages/MyBillboardPage';
 import MyStoPage from './pages/MyStoPage';
+import StoMarketPage from './pages/StoMarketPage';
 
 // ----------------------------------------------------------------------
 
@@ -32,7 +35,9 @@ export default function Router() {
         { path: 'bid', element: <BidPage /> },
         { path: 'billboard', element: <BillboardPage /> },
         { path: 'sto', element: <StoPage /> },
+        { path: 'market', element: <StoMarketPage /> },
         { path: 'billboard/:id', element: <DetailBillboardPage /> },
+        { path: 'sto/:id', element: <DetailStoPage /> },
       ],
     },
     {
@@ -44,7 +49,8 @@ export default function Router() {
       ],
     },
     { path: 'login', element: <LoginPage /> },
-    { path: 'new-npo', element: <NewNpoPage /> },
+    { path: 'new-billboard', element: <AddBillboardPage /> },
+    { path: 'new-sto', element: <AddStoPage /> },
     { path: 'deposit', element: <DepositPage /> },
     {
       element: <SimpleLayout />,

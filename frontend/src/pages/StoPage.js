@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 // @mui
 import { Container, Stack, Typography, Button } from '@mui/material';
 // mock
-import PRODUCTS from '../_mock/products';
+import PRODUCTS from '../_mock/sto';
 import Iconify from '../components/iconify';
 import StoList from '../sections/@dashboard/sto/StoList';
 

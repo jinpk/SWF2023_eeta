@@ -4,7 +4,7 @@ import { Grid, Container, Typography } from '@mui/material';
 // components
 import { BillboardCard, } from '../sections/@dashboard/billboard';
 // mock
-import POSTS from '../_mock/blog';
+import BILLBOARD from '../_mock/billboard';
 
 export default function BillboardPage() {
   return (
@@ -19,8 +19,8 @@ export default function BillboardPage() {
           </Typography>
 
         <Grid container spacing={3}>
-          {POSTS.map((post, index) => (
-            <BillboardCard key={post.id} post={post} index={index} />
+          {BILLBOARD.map((billboard, index) => (
+            <BillboardCard key={billboard.id} billboard={billboard} index={index} />
           ))}
         </Grid>
       </Container>

@@ -4,9 +4,9 @@ import { sample } from 'lodash';
 // ----------------------------------------------------------------------
 
 const PRODUCT_NAME = [
-  'Nike Air Force 1 NDESTRUKT',
-  'Nike Space Hippie 04',
-  'Nike Air Zoom Pegasus 37 A.I.R. Chaz Bear',
+  'DDP A1 구역',
+  '네이버 전면 배너',
+  '유투브 - 김구라의 뻐꾸기 골프 2분',
   'Nike Blazer Low 77 Vintage',
   'Nike ZoomX SuperRep Surge',
   'Zoom Freak 2',
@@ -50,7 +50,7 @@ const products = [...Array(24)].map((_, index) => {
       (setIndex === 23 && PRODUCT_COLOR.slice(4, 6)) ||
       (setIndex === 24 && PRODUCT_COLOR.slice(5, 6)) ||
       PRODUCT_COLOR,
-    status: sample(['sale', 'new', '', '']),
+    type: sample(['Youtube', '온라인', '옥외', 'TV', '라디오']),
   };
 });
 

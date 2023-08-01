@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import { alpha, styled } from '@mui/material/styles';
 import { Box, Card, Grid, Avatar, Typography, CardContent } from '@mui/material';
 // utils
-import { fDate } from '../../../utils/formatTime';
 import { fShortenNumber } from '../../../utils/formatNumber';
 //
 import SvgColor from '../../../components/svg-color';
@@ -54,19 +53,18 @@ const StyledCover = styled('img')({
 // ----------------------------------------------------------------------
 
 BillboardCard.propTypes = {
-  post: PropTypes.object.isRequired,
+  billboard: PropTypes.object.isRequired,
   index: PropTypes.number,
 };
 
-export default function BillboardCard({ post, index }) {
-  const { id, cover, title, view, comment, share, author, createdAt } = post;
+export default function BillboardCard({ billboard, index }) {
+  const { id, title, type, address, startTime, endTime, amount, fund } = billboard;
   const latestPostLarge = index === 0;
   const latestPost = index === 1 || index === 2;
 
   const POST_INFO = [
-    { number: comment, icon: 'eva:message-circle-fill' },
-    { number: view, icon: 'eva:eye-fill' },
-    { number: share, icon: 'eva:share-fill' },
+    { number: amount, icon: 'eva:message-circle-fill' },
+    { number: fund, icon: 'eva:eye-fill' },
   ];
 
   return (
@@ -108,8 +106,7 @@ export default function BillboardCard({ post, index }) {
             }}
           />
           <StyledAvatar
-            alt={author.name}
-            src={author.avatarUrl}
+            alt={address}
             sx={{
               ...((latestPostLarge || latestPost) && {
                 zIndex: 9,
@@ -121,7 +118,7 @@ export default function BillboardCard({ post, index }) {
             }}
           />
 
-          <StyledCover alt={title} src={cover} />
+          <StyledCover alt={title} />
         </StyledCardMedia>
 
         <CardContent
@@ -135,7 +132,7 @@ export default function BillboardCard({ post, index }) {
           }}
         >
           <Typography gutterBottom variant="caption" sx={{ color: 'text.disabled', display: 'block' }}>
-            {fDate(createdAt)}
+            {startTime} ~ {endTime}
           </Typography>
 
           <StyledTitle

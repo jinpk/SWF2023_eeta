@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------
 
 const account = {
-  displayName: 'wallet.eth',
+  displayName: 'Wallet 1',
   email: 'wallet@eth',
   photoURL: '/assets/images/avatars/avatar_default.jpg',
 };

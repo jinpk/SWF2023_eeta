@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 // @mui
-import { Box, Card, Link, Typography, Stack } from '@mui/material';
+import { Box, Card, Typography, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
 // utils
 import { fCurrency } from '../../../utils/formatNumber';
@@ -25,10 +26,11 @@ StoCard.propTypes = {
 };
 
 export default function StoCard({ product }) {
-  const { name, cover, price, colors, status, priceSale } = product;
+  const { id, name, cover, price, colors, status, priceSale } = product;
 
   return (
     <Card>
+      <Link to={`/dashboard/sto/${id}`}>
       <Box sx={{ pt: '100%', position: 'relative' }}>
         {status && (
           <Label
@@ -73,6 +75,7 @@ export default function StoCard({ product }) {
           </Typography>
         </Stack>
       </Stack>
+      </Link>
     </Card>
   );
 }
