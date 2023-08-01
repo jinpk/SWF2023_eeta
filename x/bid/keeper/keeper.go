@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
@@ -142,8 +143,14 @@ func (k Keeper) Bid(ctx sdk.Context, billboardId, auctionId uint64, address stri
 		}
 	}
 
-	// TODO: 비딩가격 업데이트
-	// pricePerMinute 계산 필요
-	// duration := auction.End - auction.Start
+	duration := auction.End - auction.Start
+	k.Logger(ctx).Info("bidded ammount: %s", bid.Amount.String())
+	k.Logger(ctx).Info("duration: %d", duration)
 	// amount / duration * 60
+	finalBidPricePerMinute := sdk.NewCoin(
+		bid.Amount.Denom,
+		bid.Amount.Amount.Quo(math.NewIntFromUint64(duration)).Mul(math.NewInt(60)),
+	)
+	k.dk.SetFinalBidPricePerMinute(ctx, billboardId, finalBidPricePerMinute)
+	k.Logger(ctx).Info("next finalBidPricePerMinute: %s", finalBidPricePerMinute.String())
 }

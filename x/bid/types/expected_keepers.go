@@ -15,6 +15,7 @@ type AccountKeeper interface {
 
 type BillboardKeeper interface {
 	GetOwnerAddress(ctx sdk.Context, billboardId uint64) sdk.AccAddress
+	SetFinalBidPricePerMinute(ctx sdk.Context, billboardId uint64, coin sdk.Coin)
 	Has(ctx sdk.Context, billboardID uint64) bool
 }
 

@@ -79,3 +79,12 @@ func (k Keeper) GetFinalBidPricePerMinute(ctx sdk.Context, billboardId uint64) s
 	k.cdc.MustUnmarshal(store.Get(types.GetBillboardIDBytes(billboardId)), &billboard)
 	return billboard.FinalBidPricePerMinute
 }
+
+func (k Keeper) SetFinalBidPricePerMinute(ctx sdk.Context, billboardId uint64, coin sdk.Coin) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.BillboardKey))
+	var billboard types.Billboard
+	k.cdc.MustUnmarshal(store.Get(types.GetBillboardIDBytes(billboardId)), &billboard)
+	billboard.FinalBidPricePerMinute = coin
+	bz := k.cdc.MustMarshal(&billboard)
+	store.Set(types.GetBillboardIDBytes(billboardId), bz)
+}
