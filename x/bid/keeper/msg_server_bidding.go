@@ -59,7 +59,7 @@ func (k msgServer) Bidding(goCtx context.Context, msg *types.MsgBidding) (*types
 	bidStore.Set(creatorAddr, bidBz)
 
 	// 모듈 어카운트에 전송
-	if err := k.bk.SendCoinsFromAccountToModule(ctx, creatorAddr, types.ModuleName, sdk.NewCoins(bid.Amount)); err != nil {
+	if err := k.bk.SendCoins(ctx, sdk.MustAccAddressFromBech32(auction.AuctionAddress), creatorAddr, sdk.NewCoins(bid.Amount)); err != nil {
 		return nil, types.ErrDepositFailed
 	}
 

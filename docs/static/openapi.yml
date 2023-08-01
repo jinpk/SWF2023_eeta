@@ -34956,6 +34956,8 @@ paths:
                     bidder_address:
                       type: string
                       title: 낙찰성공
+                    auction_address:
+                      type: string
               pagination:
                 type: object
                 properties:
@@ -71151,6 +71153,8 @@ definitions:
       bidder_address:
         type: string
         title: 낙찰성공
+      auction_address:
+        type: string
   eeta.bid.Bid:
     type: object
     properties:
@@ -71216,6 +71220,8 @@ definitions:
             bidder_address:
               type: string
               title: 낙찰성공
+            auction_address:
+              type: string
       pagination:
         type: object
         properties:

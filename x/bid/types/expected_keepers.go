@@ -26,5 +26,6 @@ type BankKeeper interface {
 	SendCoinsFromAccountToModule(
 		ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins,
 	) error
+	SendCoins(ctx sdk.Context, fromAddr, toAddr sdk.AccAddress, amt sdk.Coins) error
 	// Methods imported from bank should be defined here
 }

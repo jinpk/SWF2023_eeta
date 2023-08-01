@@ -130,14 +130,15 @@ func (k Keeper) Bid(ctx sdk.Context, billboardId, auctionId uint64, address stri
 
 	// 자금 전송
 	billboardOwnerAddr := k.dk.GetOwnerAddress(ctx, billboardId)
-	k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, billboardOwnerAddr, sdk.NewCoins(bid.Amount))
+	auctionAddr := sdk.MustAccAddressFromBech32(auction.AuctionAddress)
+	k.bk.SendCoins(ctx, auctionAddr, billboardOwnerAddr, sdk.NewCoins(bid.Amount))
 
 	// 미낙찰 자금 반환
 	for _, ubid := range k.ListBids(ctx, billboardId, auctionId) {
 		// 낙찰자 제외
 		if !strings.EqualFold(address, ubid.SenderAddress) {
 			addr := sdk.MustAccAddressFromBech32(ubid.SenderAddress)
-			k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.NewCoins(ubid.Amount))
+			k.bk.SendCoins(ctx, auctionAddr, addr, sdk.NewCoins(ubid.Amount))
 		}
 	}
 
