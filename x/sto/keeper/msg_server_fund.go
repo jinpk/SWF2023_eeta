@@ -31,6 +31,10 @@ func (k msgServer) Fund(goCtx context.Context, msg *types.MsgFund) (*types.MsgFu
 		fund = remain
 	}
 
+	if k.bankKeeper.GetBalance(ctx, creatorAddr, sto.Goal.Denom).IsLT(fund) {
+		return nil, types.ErrInsufiendrForFund
+	}
+
 	sto.Funded = sto.Funded.Add(fund)
 
 	store.Set(types.GetIDBytes(sto.Id), k.cdc.MustMarshal(&sto))

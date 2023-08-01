@@ -36,10 +36,13 @@ func (k msgServer) CreateSto(goCtx context.Context, msg *types.MsgCreateSto) (*t
 
 	organizerFundAmount := sdk.NewCoin(
 		deposittypes.StableCoinDenom,
-		goal.Amount.Quo(math.NewInt(int64(msg.OrganizerShare))),
+		goal.Amount.Mul(
+			math.NewInt(int64(msg.OrganizerShare)),
+		).Quo(math.NewInt(100)),
 	)
 
-	if k.bankKeeper.GetBalance(ctx, creatorAddr, deposittypes.StableCoinDenom).Amount.LT(organizerFundAmount.Amount) {
+	balance := k.bankKeeper.GetBalance(ctx, creatorAddr, deposittypes.StableCoinDenom)
+	if balance.Amount.LT(organizerFundAmount.Amount) {
 		return nil, types.ErrInsufiendOrganazierShare
 	}
 

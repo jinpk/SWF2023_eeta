@@ -24,6 +24,12 @@ service Query {
     option (google.api.http).get = "/eeta/sto/list_sto/{billboardId}";
   
   }
+  
+  // Queries a list of ListAllSto items.
+  rpc ListAllSto (QueryListAllStoRequest) returns (QueryListAllStoResponse) {
+    option (google.api.http).get = "/eeta/sto/list_all_sto";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -42,6 +48,15 @@ message QueryListStoRequest {
 
 message QueryListStoResponse {
   repeated Sto                                    stos       = 1 [(gogoproto.nullable) = false];
+           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryListAllStoRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryListAllStoResponse {
+  repeated Sto                                    stos       = 1[(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 

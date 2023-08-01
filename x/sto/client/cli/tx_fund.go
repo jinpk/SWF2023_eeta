@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"eeta/x/sto/types"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -16,15 +17,20 @@ var _ = strconv.Itoa(0)
 
 func CmdFund() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "fund [sto-id] [amount]",
+		Use:   "fund [billboard-id] [sto-id] [amount]",
 		Short: "Broadcast message fund",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argStoId, err := cast.ToUint64E(args[0])
+			argBillboardId, err := cast.ToUint64E(args[0])
 			if err != nil {
 				return err
 			}
-			argAmount, err := sdk.ParseCoinNormalized(args[1])
+
+			argStoId, err := cast.ToUint64E(args[1])
+			if err != nil {
+				return err
+			}
+			argAmount, err := sdk.ParseCoinNormalized(args[2])
 			if err != nil {
 				return err
 			}
@@ -36,6 +42,7 @@ func CmdFund() *cobra.Command {
 
 			msg := types.NewMsgFund(
 				clientCtx.GetFromAddress().String(),
+				argBillboardId,
 				argStoId,
 				argAmount,
 			)
