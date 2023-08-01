@@ -1,7 +1,37 @@
 syntax = "proto3";
+
 package eeta.sto;
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "eeta/x/sto/types";
 
 // Msg defines the Msg service.
-service Msg {}
+service Msg {
+  rpc CreateSto (MsgCreateSto) returns (MsgCreateStoResponse);
+  rpc Fund      (MsgFund     ) returns (MsgFundResponse     );
+}
+message MsgCreateSto {
+  string creator             = 1;
+  uint64 billboard_id        = 2;
+  string organizer_url       = 3;
+  string organizer_image_url = 4;
+  string name                = 5;
+  int64  start               = 6;
+  int64  end                 = 7;
+  int32  user_share          = 8;
+  int32  organizer_share     = 9;
+}
+
+message MsgCreateStoResponse {}
+
+message MsgFund {
+  string                   creator = 1;
+  uint64                   sto_id   = 2;
+  cosmos.base.v1beta1.Coin amount  = 3 [(gogoproto.nullable) = false];
+  uint64 billboard_id        = 4;
+}
+
+message MsgFundResponse {}
+

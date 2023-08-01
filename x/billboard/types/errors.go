@@ -8,5 +8,6 @@ import (
 
 // x/billboard module sentinel errors
 var (
-	ErrSample = sdkerrors.Register(ModuleName, 1100, "sample error")
+	ErrNotFoundBillboard = sdkerrors.Register(ModuleName, 1, "not found billboard")
+	ErrSample            = sdkerrors.Register(ModuleName, 1100, "sample error")
 )

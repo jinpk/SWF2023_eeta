@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
@@ -42,16 +43,13 @@ func NewKeeper(
 		ps = ps.WithKeyTable(types.ParamKeyTable())
 	}
 
-	if addr := ak.GetModuleAddress(types.ModuleName); addr == nil {
-		panic("the claidrop module account has not been set")
-	}
-
 	return &Keeper{
 		cdc:        cdc,
 		storeKey:   storeKey,
 		memKey:     memKey,
-		paramstore: ps, ak: ak,
-		bk: bk, dk: dk,
+		paramstore: ps,
+		ak:         ak,
+		bk:         bk, dk: dk,
 	}
 }
 
@@ -77,7 +75,6 @@ func (k Keeper) CreateModuleAccount(ctx sdk.Context) {
 	moduleAcc := authtypes.NewEmptyModuleAccount(types.ModuleName, authtypes.Minter)
 
 	k.ak.SetModuleAccount(ctx, moduleAcc)
-
 }
 
 func (k Keeper) ListUnBiddedAuctions(ctx sdk.Context) (auctions []types.Auction) {
@@ -134,18 +131,28 @@ func (k Keeper) Bid(ctx sdk.Context, billboardId, auctionId uint64, address stri
 
 	// 자금 전송
 	billboardOwnerAddr := k.dk.GetOwnerAddress(ctx, billboardId)
-	k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, billboardOwnerAddr, sdk.NewCoins(bid.Amount))
+	auctionAddr := sdk.MustAccAddressFromBech32(auction.AuctionAddress)
+	k.bk.SendCoins(ctx, auctionAddr, billboardOwnerAddr, sdk.NewCoins(bid.Amount))
 
 	// 미낙찰 자금 반환
 	for _, ubid := range k.ListBids(ctx, billboardId, auctionId) {
 		// 낙찰자 제외
 		if !strings.EqualFold(address, ubid.SenderAddress) {
 			addr := sdk.MustAccAddressFromBech32(ubid.SenderAddress)
-			k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.NewCoins(ubid.Amount))
+			k.bk.SendCoins(ctx, auctionAddr, addr, sdk.NewCoins(ubid.Amount))
 		}
 	}
 
-	// TODO: 비딩가격 업데이트
-	// duration := auction.End - auction.Start
+	duration := auction.End - auction.Start
+	k.Logger(ctx).Info("bidded ammount: %s", bid.Amount.String())
+	k.Logger(ctx).Info("duration: %d", duration)
 	// amount / duration * 60
+	finalBidPricePerMinute := sdk.NewCoin(
+		bid.Amount.Denom,
+		bid.Amount.Amount.Quo(math.NewIntFromUint64(duration)).Mul(math.NewInt(60)),
+	)
+	k.dk.SetFinalBidPricePerMinute(ctx, billboardId, finalBidPricePerMinute)
+	k.Logger(ctx).Info("next finalBidPricePerMinute: %s", finalBidPricePerMinute.String())
+
+	// TODO: 지급시 STO 계산해서 STO 및 billboard owner에게 분산 지급
 }

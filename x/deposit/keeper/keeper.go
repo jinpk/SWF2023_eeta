@@ -46,3 +46,13 @@ func NewKeeper(
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
+
+func (k Keeper) assertMinter(ctx sdk.Context, sender sdk.AccAddress) error {
+	// TODO: 스테이블 코인 발행 제한
+	//params := k.GetParams(ctx)
+	//minterAddres := params.GetMinterAddress()
+	//if !strings.EqualFold(minterAddres, msg.Sender) {
+	//	return nil, types.ErrUnauthMint
+	//}
+	return nil
+}

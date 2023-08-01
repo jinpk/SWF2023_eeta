@@ -3,6 +3,7 @@ package deposit
 import (
 	"eeta/x/deposit/keeper"
 	"eeta/x/deposit/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

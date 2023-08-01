@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"strings"
 
 	"eeta/x/deposit/types"
 
@@ -12,14 +11,14 @@ import (
 func (k msgServer) Mint(goCtx context.Context, msg *types.MsgMint) (*types.MsgMintResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(msg.Coin)); err != nil {
-		return nil, err
+	// 권한체크
+	minterAddress := sdk.MustAccAddressFromBech32(msg.Sender)
+	if err := k.assertMinter(ctx, minterAddress); err != nil {
+		return nil, types.ErrUnauthMint
 	}
 
-	params := k.GetParams(ctx)
-	minterAddres := params.GetMinterAddress()
-	if !strings.EqualFold(minterAddres, msg.Sender) {
-		return nil, types.ErrUnauthMint
+	if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(msg.Coin)); err != nil {
+		return nil, err
 	}
 
 	if address, err := sdk.AccAddressFromBech32(msg.ReceipientAddress); err != nil {

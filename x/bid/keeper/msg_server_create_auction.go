@@ -2,10 +2,12 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"eeta/x/bid/types"
 
+	billboardtypes "eeta/x/billboard/types"
 	deposittypes "eeta/x/deposit/types"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
@@ -15,7 +17,7 @@ import (
 func (k msgServer) CreateAuction(goCtx context.Context, msg *types.MsgCreateAuction) (*types.MsgCreateAuctionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	creatorAddr, _ := sdk.AccAddressFromBech32(msg.Creator)
+	creatorAddr := sdk.MustAccAddressFromBech32(msg.Creator)
 
 	now := time.Now()
 	startTime := time.Unix(int64(msg.Start), 0)
@@ -27,6 +29,7 @@ func (k msgServer) CreateAuction(goCtx context.Context, msg *types.MsgCreateAuct
 
 	params := k.GetParams(ctx)
 	blockGenSecond := 10 // TODO: 블록 생성 시간 계산 필요
+	// 공백 사간 필요
 	if now.Add(time.Second * time.Duration(int(params.WaitBlock)*blockGenSecond)).After(startTime) {
 		return nil, types.ErrRequireSpaceTime
 	}
@@ -37,6 +40,10 @@ func (k msgServer) CreateAuction(goCtx context.Context, msg *types.MsgCreateAuct
 		return nil, types.ErrInsufientBalance
 	}
 
+	if !k.dk.Has(ctx, msg.BillboardId) {
+		return nil, billboardtypes.ErrNotFoundBillboard
+	}
+
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.GetAuctionKeyPrefix(msg.BillboardId))
 
 	// 겹치는 시간대에 진행중인 비딩이 있는지 확인
@@ -45,25 +52,29 @@ func (k msgServer) CreateAuction(goCtx context.Context, msg *types.MsgCreateAuct
 	for ; iterator.Valid(); iterator.Next() {
 		var auction types.Auction
 		k.cdc.MustUnmarshal(iterator.Value(), &auction)
-		// 절대시간 검증 로직 없음 단순 계산
-		// TODO: 겹치는 시간 검증 필요
-		if msg.Start >= auction.Start && msg.End <= auction.End ||
-			msg.Start >= auction.Start && msg.Start+msg.End > auction.End ||
-			msg.Start >= auction.Start && auction.Start+auction.End > msg.End ||
-			msg.End <= auction.End && msg.Start+msg.End > auction.Start {
+		if msg.Start >= auction.Start && msg.End <= auction.End {
 			return nil, types.ErrExistAuctionTime
 		}
+		//if msg.Start >= auction.Start && msg.End > auction.End {
+		//	return nil, types.ErrExistAuctionTime
+		//}
+		//if msg.End <= auction.End && msg.Start+msg.End > auction.Start {
+		//	return nil, types.ErrExistAuctionTime
+		//}
 	}
 
 	var nextAuctionId uint64 = k.NextAuctionId(ctx, msg.BillboardId)
 
 	// auction 생성
+	auctionPoolAddr := types.NewAuctionPoolAddress(nextAuctionId)
+	k.Logger(ctx).Info(fmt.Sprintf("new auction address %d %s", nextAuctionId, auctionPoolAddr.String()))
 	auction := types.Auction{
-		Id:            nextAuctionId,
-		BillboardId:   msg.BillboardId,
-		Start:         msg.Start,
-		End:           msg.End,
-		BidderAddress: "", // 낙찰자 없음
+		AuctionAddress: auctionPoolAddr.String(),
+		Id:             nextAuctionId,
+		BillboardId:    msg.BillboardId,
+		Start:          msg.Start,
+		End:            msg.End,
+		BidderAddress:  "", // 낙찰자 없음
 	}
 	bz := k.cdc.MustMarshal(&auction)
 	store.Set(types.GetIDBytes(nextAuctionId), bz)
@@ -80,12 +91,13 @@ func (k msgServer) CreateAuction(goCtx context.Context, msg *types.MsgCreateAuct
 
 	auctionStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.GetBidKeyPrefix(msg.BillboardId, auction.Id))
 
-	auctionStore.Set(creatorAddr, bidBz)
-
-	// 모듈 어카운트에 전송
-	if err := k.bk.SendCoinsFromAccountToModule(ctx, creatorAddr, types.ModuleName, sdk.NewCoins(bid.Amount)); err != nil {
+	if err := k.bk.SendCoins(ctx, creatorAddr, auctionPoolAddr, sdk.NewCoins(bid.Amount)); err != nil {
 		return nil, types.ErrDepositFailed
 	}
+
+	k.Logger(ctx).Info("deposit account to bid module for bidding")
+
+	auctionStore.Set(creatorAddr, bidBz)
 
 	return &types.MsgCreateAuctionResponse{}, nil
 }

@@ -67,3 +67,24 @@ func (k Keeper) GetNextBillboardId(ctx sdk.Context) uint64 {
 
 	return count
 }
+
+func (k Keeper) Has(ctx sdk.Context, billboardID uint64) bool {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.BillboardKey))
+	return store.Has(types.GetBillboardIDBytes(billboardID))
+}
+
+func (k Keeper) GetFinalBidPricePerMinute(ctx sdk.Context, billboardId uint64) sdk.Coin {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.BillboardKey))
+	var billboard types.Billboard
+	k.cdc.MustUnmarshal(store.Get(types.GetBillboardIDBytes(billboardId)), &billboard)
+	return billboard.FinalBidPricePerMinute
+}
+
+func (k Keeper) SetFinalBidPricePerMinute(ctx sdk.Context, billboardId uint64, coin sdk.Coin) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.BillboardKey))
+	var billboard types.Billboard
+	k.cdc.MustUnmarshal(store.Get(types.GetBillboardIDBytes(billboardId)), &billboard)
+	billboard.FinalBidPricePerMinute = coin
+	bz := k.cdc.MustMarshal(&billboard)
+	store.Set(types.GetBillboardIDBytes(billboardId), bz)
+}

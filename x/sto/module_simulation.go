@@ -23,7 +23,15 @@ var (
 )
 
 const (
-// this line is used by starport scaffolding # simapp/module/const
+	opWeightMsgCreateSto = "op_weight_msg_create_sto"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgCreateSto int = 100
+
+	opWeightMsgFund = "op_weight_msg_fund"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgFund int = 100
+
+	// this line is used by starport scaffolding # simapp/module/const
 )
 
 // GenerateGenesisState creates a randomized GenState of the module.
@@ -51,6 +59,28 @@ func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedP
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
 
+	var weightMsgCreateSto int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreateSto, &weightMsgCreateSto, nil,
+		func(_ *rand.Rand) {
+			weightMsgCreateSto = defaultWeightMsgCreateSto
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgCreateSto,
+		stosimulation.SimulateMsgCreateSto(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgFund int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgFund, &weightMsgFund, nil,
+		func(_ *rand.Rand) {
+			weightMsgFund = defaultWeightMsgFund
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgFund,
+		stosimulation.SimulateMsgFund(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
 	// this line is used by starport scaffolding # simapp/module/operation
 
 	return operations
@@ -59,6 +89,22 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 // ProposalMsgs returns msgs used for governance proposals for simulations.
 func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.WeightedProposalMsg {
 	return []simtypes.WeightedProposalMsg{
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgCreateSto,
+			defaultWeightMsgCreateSto,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				stosimulation.SimulateMsgCreateSto(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgFund,
+			defaultWeightMsgFund,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				stosimulation.SimulateMsgFund(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
 		// this line is used by starport scaffolding # simapp/module/OpMsg
 	}
 }

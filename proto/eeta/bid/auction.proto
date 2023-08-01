@@ -15,4 +15,5 @@ message Auction {
     uint64 start = 3; // utc unix
     uint64 end = 4; // utc unix
     string bidder_address = 5; // 낙찰성공 
+    string auction_address = 6;
 }
