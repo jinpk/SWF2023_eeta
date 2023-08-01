@@ -143,6 +143,7 @@ func (k Keeper) Bid(ctx sdk.Context, billboardId, auctionId uint64, address stri
 	}
 
 	// TODO: 비딩가격 업데이트
+	// pricePerMinute 계산 필요
 	// duration := auction.End - auction.Start
 	// amount / duration * 60
 }

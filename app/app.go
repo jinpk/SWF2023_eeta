@@ -194,6 +194,7 @@ var (
 		distrtypes.ModuleName:          nil,
 		icatypes.ModuleName:            nil,
 		bidmoduletypes.ModuleName:      nil,
+		stomoduletypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
 		depositmoduletypes.ModuleName:  {authtypes.Minter, authtypes.Burner},
 		stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
@@ -542,6 +543,8 @@ func New(
 		keys[stomoduletypes.StoreKey],
 		keys[stomoduletypes.MemStoreKey],
 		app.GetSubspace(stomoduletypes.ModuleName),
+		app.BillboardKeeper,
+		app.BankKeeper,
 	)
 	stoModule := stomodule.NewAppModule(appCodec, app.StoKeeper, app.AccountKeeper, app.BankKeeper)
 
