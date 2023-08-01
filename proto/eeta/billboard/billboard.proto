@@ -15,5 +15,5 @@ message Billboard {
     string description = 4;
     string url = 5; // 
     string board_type = 6; // online | offline etc
-    cosmos.base.v1beta1.Coin final_bid_price_per_minute = 7 [(gogoproto.nullable) = false]; /
+    cosmos.base.v1beta1.Coin final_bid_price_per_minute = 7 [(gogoproto.nullable) = false];
 }
