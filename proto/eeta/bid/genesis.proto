@@ -1,0 +1,19 @@
+syntax = "proto3";
+package eeta.bid;
+
+import "gogoproto/gogo.proto";
+import "eeta/bid/params.proto";
+import "eeta/bid/bid.proto";
+
+option go_package = "eeta/x/bid/types";
+
+// GenesisState defines the bid module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  repeated BillboardAuction billboard_auctions = 2  [(gogoproto.nullable) = false];
+}
+
+message BillboardAuction {
+  uint64 billboard_id = 1;
+  repeated Auction auctions = 2 [(gogoproto.nullable) = false];
+}

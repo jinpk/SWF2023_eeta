@@ -1,0 +1,7 @@
+syntax = "proto3";
+package eeta.bid;
+
+option go_package = "eeta/x/bid/types";
+
+// Msg defines the Msg service.
+service Msg {}

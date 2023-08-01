@@ -34923,6 +34923,46 @@ paths:
           format: int64
       tags:
         - Query
+  /eeta/bid/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: EetaBidParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+                properties:
+                  waitBlock:
+                    type: string
+                    format: uint64
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /eeta/billboards:
     get:
       summary: Queries a list of ListBillboard items.
@@ -34941,6 +34981,7 @@ paths:
                     id:
                       type: string
                       format: uint64
+                      title: 고유 ID
                     owner_address:
                       type: string
                     name:
@@ -34951,7 +34992,8 @@ paths:
                       type: string
                     board_type:
                       type: string
-                    min_price:
+                      title: online | offline etc
+                    final_bid_price_per_minute:
                       type: object
                       properties:
                         denom:
@@ -70787,12 +70829,31 @@ definitions:
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
     description: Period defines a length of time and amount of coins that will vest.
+  eeta.bid.Params:
+    type: object
+    properties:
+      waitBlock:
+        type: string
+        format: uint64
+    description: Params defines the parameters for the module.
+  eeta.bid.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+        properties:
+          waitBlock:
+            type: string
+            format: uint64
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
   eeta.billboard.Billboard:
     type: object
     properties:
       id:
         type: string
         format: uint64
+        title: 고유 ID
       owner_address:
         type: string
       name:
@@ -70803,7 +70864,8 @@ definitions:
         type: string
       board_type:
         type: string
-      min_price:
+        title: online | offline etc
+      final_bid_price_per_minute:
         type: object
         properties:
           denom:
@@ -70831,6 +70893,7 @@ definitions:
             id:
               type: string
               format: uint64
+              title: 고유 ID
             owner_address:
               type: string
             name:
@@ -70841,7 +70904,8 @@ definitions:
               type: string
             board_type:
               type: string
-            min_price:
+              title: online | offline etc
+            final_bid_price_per_minute:
               type: object
               properties:
                 denom:
