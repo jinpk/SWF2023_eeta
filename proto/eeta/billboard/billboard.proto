@@ -9,11 +9,11 @@ option go_package = "eeta/x/billboard/types";
 message Billboard {
     option (gogoproto.equal) = true;
 
-    uint64 id = 1;
-    string owner_address = 2;
+    uint64 id = 1; // 고유 ID
+    string owner_address = 2; 
     string name = 3;
     string description = 4;
-    string url = 5;
-    string board_type = 6;
-    cosmos.base.v1beta1.Coin min_price = 7 [(gogoproto.nullable) = false];
+    string url = 5; // 
+    string board_type = 6; // online | offline etc
+    cosmos.base.v1beta1.Coin final_bid_price_per_minute = 7 [(gogoproto.nullable) = false]; /
 }

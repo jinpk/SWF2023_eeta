@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"eeta/x/billboard/types"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -15,7 +16,7 @@ var _ = strconv.Itoa(0)
 
 func CmdCreateBillboard() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-billboard [name] [description] [url] [board-type] [min-price]",
+		Use:   "create-billboard [name] [description] [url] [board-type] [final-bid-price-per-minute]",
 		Short: "Broadcast message create-billboard",
 		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
@@ -23,7 +24,7 @@ func CmdCreateBillboard() *cobra.Command {
 			argDescription := args[1]
 			argUrl := args[2]
 			argBoardType := args[3]
-			argMinPrice, err := sdk.ParseCoinNormalized(args[4])
+			argFinalBidPricePerMinute, err := sdk.ParseCoinNormalized(args[4])
 			if err != nil {
 				return err
 			}
@@ -39,7 +40,7 @@ func CmdCreateBillboard() *cobra.Command {
 				argDescription,
 				argUrl,
 				argBoardType,
-				argMinPrice,
+				argFinalBidPricePerMinute,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

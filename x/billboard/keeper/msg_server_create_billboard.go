@@ -17,13 +17,13 @@ func (k msgServer) CreateBillboard(goCtx context.Context, msg *types.MsgCreateBi
 	billboardId := k.GetNextBillboardId(ctx)
 
 	billboard := types.Billboard{
-		Id:           billboardId,
-		OwnerAddress: msg.Creator,
-		Name:         msg.Name,
-		Description:  msg.Description,
-		Url:          msg.Url,
-		BoardType:    msg.BoardType,
-		MinPrice:     msg.MinPrice,
+		Id:                     billboardId,
+		OwnerAddress:           msg.Creator,
+		Name:                   msg.Name,
+		Description:            msg.Description,
+		Url:                    msg.Url,
+		BoardType:              msg.BoardType,
+		FinalBidPricePerMinute: msg.FinalBidPricePerMinute,
 	}
 
 	bz := k.cdc.MustMarshal(&billboard)

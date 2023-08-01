@@ -13,7 +13,7 @@ const (
 	RouterKey = ModuleName
 
 	// RouterKey defines the module's message routing key
-	BillboardKey = "Billboard/value/"
+	BillboardKey = ModuleName + "/value/"
 
 	// MemStoreKey defines the in-memory store key
 	MemStoreKey = "mem_billboard"

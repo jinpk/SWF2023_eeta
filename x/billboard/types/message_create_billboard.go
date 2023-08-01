@@ -9,14 +9,14 @@ const TypeMsgCreateBillboard = "create_billboard"
 
 var _ sdk.Msg = &MsgCreateBillboard{}
 
-func NewMsgCreateBillboard(creator string, name string, description string, url string, boardType string, minPrice sdk.Coin) *MsgCreateBillboard {
+func NewMsgCreateBillboard(creator string, name string, description string, url string, boardType string, finalBidPricePerMinute sdk.Coin) *MsgCreateBillboard {
 	return &MsgCreateBillboard{
-		Creator:     creator,
-		Name:        name,
-		Description: description,
-		Url:         url,
-		BoardType:   boardType,
-		MinPrice:    minPrice,
+		Creator:                creator,
+		Name:                   name,
+		Description:            description,
+		Url:                    url,
+		BoardType:              boardType,
+		FinalBidPricePerMinute: finalBidPricePerMinute,
 	}
 }
 

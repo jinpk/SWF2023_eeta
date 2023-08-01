@@ -17,8 +17,8 @@ message MsgCreateBillboard {
   string                   name        = 2;
   string                   description = 3;
   string                   url         = 4;
-  string                   boardType   = 5;
-  cosmos.base.v1beta1.Coin minPrice    = 6 [(gogoproto.nullable) = false];
+  string                   board_type   = 5;
+  cosmos.base.v1beta1.Coin final_bid_price_per_minute    = 6 [(gogoproto.nullable) = false];
 }
 
 message MsgCreateBillboardResponse {}
