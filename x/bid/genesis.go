@@ -3,6 +3,7 @@ package bid
 import (
 	"eeta/x/bid/keeper"
 	"eeta/x/bid/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

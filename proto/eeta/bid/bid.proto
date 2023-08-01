@@ -7,14 +7,6 @@ import "gogoproto/gogo.proto";
 
 option go_package = "eeta/x/bid/types";
 
-message Auction {
-    uint64 billboard_id = 1; 
-    uint64 start = 2;
-    uint64 end = 3;
-    string bidder_address = 4; // 낙찰성공 
-    repeated Bid bids = 5 [(gogoproto.nullable) = false];
-}
-
 message Bid {
     string sender_address = 1;
     cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false];

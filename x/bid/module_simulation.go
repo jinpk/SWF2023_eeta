@@ -23,7 +23,15 @@ var (
 )
 
 const (
-// this line is used by starport scaffolding # simapp/module/const
+	opWeightMsgCreateAuction = "op_weight_msg_create_auction"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgCreateAuction int = 100
+
+	opWeightMsgBidding = "op_weight_msg_bidding"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgBidding int = 100
+
+	// this line is used by starport scaffolding # simapp/module/const
 )
 
 // GenerateGenesisState creates a randomized GenState of the module.
@@ -51,6 +59,28 @@ func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedP
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
 
+	var weightMsgCreateAuction int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreateAuction, &weightMsgCreateAuction, nil,
+		func(_ *rand.Rand) {
+			weightMsgCreateAuction = defaultWeightMsgCreateAuction
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgCreateAuction,
+		bidsimulation.SimulateMsgCreateAuction(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgBidding int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgBidding, &weightMsgBidding, nil,
+		func(_ *rand.Rand) {
+			weightMsgBidding = defaultWeightMsgBidding
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgBidding,
+		bidsimulation.SimulateMsgBidding(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
 	// this line is used by starport scaffolding # simapp/module/operation
 
 	return operations
@@ -59,6 +89,22 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 // ProposalMsgs returns msgs used for governance proposals for simulations.
 func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.WeightedProposalMsg {
 	return []simtypes.WeightedProposalMsg{
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgCreateAuction,
+			defaultWeightMsgCreateAuction,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				bidsimulation.SimulateMsgCreateAuction(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgBidding,
+			defaultWeightMsgBidding,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				bidsimulation.SimulateMsgBidding(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
 		// this line is used by starport scaffolding # simapp/module/OpMsg
 	}
 }

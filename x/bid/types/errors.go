@@ -8,5 +8,6 @@ import (
 
 // x/bid module sentinel errors
 var (
-	ErrSample = sdkerrors.Register(ModuleName, 1100, "sample error")
+	ErrExistAuctionTime = sdkerrors.Register(ModuleName, 1, "해당 빌보드의 광고 시간은 이미 선점되었습니다.")
+	ErrSample           = sdkerrors.Register(ModuleName, 1100, "sample error")
 )

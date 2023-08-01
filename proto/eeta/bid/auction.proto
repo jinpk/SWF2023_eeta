@@ -1,0 +1,16 @@
+syntax = "proto3";
+package eeta.bid;
+
+import "eeta/bid/params.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "eeta/x/bid/types";
+
+message Auction {
+    uint64 id = 1; // unique within billboard_id
+    uint64 billboard_id = 2; 
+    uint64 start = 3; // utc unix
+    uint64 end = 4; // utc unix
+    string bidder_address = 5; // 낙찰성공 
+}
