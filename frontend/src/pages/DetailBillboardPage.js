@@ -25,6 +25,43 @@ export default function DetailBillboardPage() {
   const { id } = useParams();
   const theme = useTheme();
 
+
+  const handleClick = async () => {
+    const accounts = await window.cosmostation.cosmos.request({
+      method: "cos_account",
+      params: { chainName: "eeta" },
+    });       
+
+    const aa = await fetch(`http://3.37.36.76:1317/cosmos/auth/v1beta1/accounts/${accounts.address}`);
+    const account = await aa.json()
+const seq = account.account.sequence
+const an = account.account.account_number
+    const response = await window.cosmostation.cosmos.request({
+      method: "cos_signAmino",
+      params: {
+        chainName: "eeta",
+        doc: {
+          chain_id: "eeta",
+          fee: { amount: [{ denom: "stake", amount: "5000" }], gas: "200000" },
+          memo: "",
+          msgs: [
+            {
+              type: "/eeta.billboard.MsgCreateBillboard",
+              value: {
+                board_type: "online",
+                name: "Naver",
+                description: "Naver",
+                url: "https://naver.com",
+                final_bid_price_per_minute: [{ denom: "krw", amount: "1000000" }],
+              },
+            },
+          ],
+          sequence: seq,
+          account_number: an,
+        },
+      },
+    });
+  };
   return (
     <>
       <Helmet>
@@ -37,10 +74,10 @@ export default function DetailBillboardPage() {
             Billboard
           </Typography>
           <Stack direction="row" spacing={1}>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleClick}>
             STO 모금하기
           </Button>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleClick}>
             광고 입찰하기
           </Button>
           </Stack>

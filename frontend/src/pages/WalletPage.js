@@ -109,6 +109,8 @@ export default function WalletPage() {
 
   const [account, setAccount] = useState();
 
+  const [balances, setBalances] = useState();
+
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
   };
@@ -179,7 +181,6 @@ export default function WalletPage() {
           params: { chainName: "eeta" },
         }); 
       setAccount(account);
-      console.log(account);
       } catch (error) {
         console.error('Error fetching billboards:', error);
       }
@@ -187,14 +188,25 @@ export default function WalletPage() {
 
     async function fetchStos() {
       try {
-        const response = await fetch('http://3.37.36.76:1317/eeta/stos');
+        const response = await fetch('http://3.37.36.76:1317/eeta/sto/list_all_sto');
         const data = await response.json();
-        setStos(data.billboard);
+        setStos(data.stos);
+        console.log(data);
       } catch (error) {
         console.error('Error fetching billboards:', error);
       }
     }
 
+    async function fetchBalances() {
+      const accounts = await window.cosmostation.cosmos.request({
+        method: "cos_account",
+        params: { chainName: "eeta" },
+      });       
+      const b = await fetch(`http://3.37.36.76:1317/cosmos/bank/v1beta1/balances/${accounts.address}`);
+      const data = await b.json();
+      setBalances(data.balances);
+      console.log(data.balances);
+    }
     async function fetchBillboards() {
       try {
         const response = await fetch('http://3.37.36.76:1317/eeta/billboards');
@@ -204,7 +216,7 @@ export default function WalletPage() {
         console.error('Error fetching billboards:', error);
       }
     }
-
+    fetchBalances();
     fetchBillboards();
     fetchStos();
     fetchAccount();
@@ -224,9 +236,9 @@ export default function WalletPage() {
             Hello 🙈
           </Typography>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h1" component="h2">
-            3000 KRW
-          </Typography>          
+        {balances && <Typography variant="h1" component="h2">
+            {balances.filter(i => i.denom === 'krw')[0].amount * 0.000001} KRW
+          </Typography>          }
           <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleDeposit}>
             Deposit
           </Button>
@@ -235,19 +247,21 @@ export default function WalletPage() {
 
         <Grid container spacing={3}>
 
+{balances && 
 <Grid item xs={12} md={6} lg={6}>
   <AppNewsUpdate
     title="참여중인 펀딩"
-    list={billboards.map((item, index) => ({
-      id: item.id,
-      title: item.name,
-      description: item.final_bid_price_per_minute.amount + item.board_type,
-      image: `/assets/images/covers/cover_4.jpg`,
+    list={balances.map((item, index) => ({
+      id: index,
+      title:  item.amount,
+      description: item.denom,
+      image: `/assets/images/covers/cover_2.jpg`,
       postedAt: faker.date.recent(),
     }))}
   />
 </Grid>
-
+}
+{billboards &&
 <Grid item xs={12} md={6} lg={6}>
   <AppNewsUpdate
     title="나의 광고"
@@ -260,32 +274,36 @@ export default function WalletPage() {
     }))}
   />
 </Grid>
+}
 
+{stos && 
 <Grid item xs={12} md={6} lg={6}>
   <AppNewsUpdate
     title="내가 모금중인 STO"
-    list={billboards.map((item, index) => ({
+    list={stos.map((item, index) => ({
       id: item.id,
-      title: item.name,
-      description: item.final_bid_price_per_minute.amount + item.board_type,
-      image: `/assets/images/covers/cover_1.jpg`,
+      title:  item.name,
+      description: `목표:${  item.goal.amount  }, 모금:${  item.funded.amount}`,
+      image: `/assets/images/covers/cover_4.jpg`,
       postedAt: faker.date.recent(),
     }))}
   />
 </Grid>
-
+}
+{stos && 
 <Grid item xs={12} md={6} lg={6}>
   <AppNewsUpdate
     title="내가 판매중인 STO"
-    list={billboards.map((item, index) => ({
+    list={stos.map((item, index) => ({
       id: item.id,
-      title: item.name,
-      description: item.final_bid_price_per_minute.amount + item.board_type,
-      image: `/assets/images/covers/cover_2.jpg`,
+      title:  item.name,
+      description: `목표:${  item.goal.amount  }, 모금:${  item.funded.amount}`,
+      image: `/assets/images/covers/cover_6.jpg`,
       postedAt: faker.date.recent(),
     }))}
   />
 </Grid>
+}
                     </Grid>
       </Container>
     </>

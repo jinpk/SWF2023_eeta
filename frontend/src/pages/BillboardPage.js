@@ -23,7 +23,11 @@ export default function BillboardPage() {
   }, []);
 
   const handleSign = async () => {
-    const aa = await fetch('http://3.37.36.76:1317/cosmos/auth/v1beta1/accounts/eeta1syvj993c6q256pcggndffp6ucpn69g3h0pwe3g');
+    const accounts = await window.cosmostation.cosmos.request({
+      method: "cos_account",
+      params: { chainName: "eeta" },
+    });       
+    const aa = await fetch(`http://3.37.36.76:1317/cosmos/auth/v1beta1/accounts/${accounts.address}`);
     const account = await aa.json()
 const seq = account.account.sequence
 const an = account.account.account_number

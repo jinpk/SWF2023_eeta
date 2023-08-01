@@ -38,37 +38,41 @@ export default function DetailStoPage() {
     }));
   };
 
-  const handleClick = () => {
-    const apiUrl = 'http://ec2-3-37-36-76.ap-northeast-2.compute.amazonaws.com:8000/npos/';
+  const handleClick = async () => {
+    const accounts = await window.cosmostation.cosmos.request({
+      method: "cos_account",
+      params: { chainName: "eeta" },
+    });       
 
-    // Prepare the data object
-    const data = {
-      npo_name: formData.name,
-      description: formData.description,
-      website_url: formData.url,
-      logo_url: formData.image,
-    };
-
-    // Send the data using fetch API
-    fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'accept': 'application/json',
+    const aa = await fetch(`http://3.37.36.76:1317/cosmos/auth/v1beta1/accounts/${accounts.address}`);
+    const account = await aa.json()
+const seq = account.account.sequence
+const an = account.account.account_number
+    const response = await window.cosmostation.cosmos.request({
+      method: "cos_signAmino",
+      params: {
+        chainName: "eeta",
+        doc: {
+          chain_id: "eeta",
+          fee: { amount: [{ denom: "stake", amount: "5000" }], gas: "200000" },
+          memo: "",
+          msgs: [
+            {
+              type: "/eeta.billboard.MsgCreateBillboard",
+              value: {
+                board_type: "online",
+                name: "Naver",
+                description: "Naver",
+                url: "https://naver.com",
+                final_bid_price_per_minute: [{ denom: "krw", amount: "1000000" }],
+              },
+            },
+          ],
+          sequence: seq,
+          account_number: an,
+        },
       },
-      body: JSON.stringify(data),
-    })
-      .then((response) => {
-        if (response.ok) {
-          // Data sent successfully, navigate to the dashboard
-        } else {
-          // Handle errors here if needed
-          console.error('Failed to send data.');
-        }
-      })
-      .catch((error) => {
-        console.error('Error occurred:', error);
-      });
+    });
   };
 
   return (
@@ -87,24 +91,7 @@ export default function DetailStoPage() {
           DDP A1 구역 전면광고
         </Typography>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={6} lg={4}>
-            <Stack spacing={3} sx={{ my: 2 }}>
-            <TextField
-                name="amount"
-                label="Amount"
-                value={formData.amount}
-                onChange={handleChange}
-              />
-            </Stack>
-
-            <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={handleClick}>
-              STO 참여하기
-            </LoadingButton>
-            <Typography>
-            Available : 3,000 ST
-            </Typography>
-          </Grid>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={6} lg={6}>
             <AppOrderTimeline
               title="펀딩 일정"
               list={[...Array(4)].map((_, index) => ({
@@ -120,7 +107,7 @@ export default function DetailStoPage() {
               }))}
             />
           </Grid>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={6} lg={6}>
             <AppTrafficBySite
               title="위험지수"
               list={[
@@ -146,6 +133,23 @@ export default function DetailStoPage() {
                 },
               ]}
             />
+          </Grid>
+          <Grid item xs={12} md={6} lg={4}>
+            <Stack spacing={3} sx={{ my: 2 }}>
+            <TextField
+                name="amount"
+                label="Amount"
+                value={formData.amount}
+                onChange={handleChange}
+              />
+            </Stack>
+
+            <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={handleClick}>
+              STO 참여하기
+            </LoadingButton>
+            <Typography>
+            Available : 3,000 ST
+            </Typography>
           </Grid>
 
         </Grid>

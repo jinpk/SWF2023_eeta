@@ -58,27 +58,15 @@ export default function DepositForm() {
     <>
       <Stack spacing={3} sx={{ my: 2 }}>
         <TextField
-          name="name"
-          label="Name"
+          name="address"
+          label="Address"
           value={formData.name}
           onChange={handleChange}
         />
         <TextField
-          name="description"
-          label="Description"
+          name="amount"
+          label="Amount"
           value={formData.description}
-          onChange={handleChange}
-        />
-        <TextField
-          name="url"
-          label="Url"
-          value={formData.url}
-          onChange={handleChange}
-        />
-        <TextField
-          name="image"
-          label="Image"
-          value={formData.image}
           onChange={handleChange}
         />
       </Stack>
