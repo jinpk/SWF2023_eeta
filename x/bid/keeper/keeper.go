@@ -153,4 +153,6 @@ func (k Keeper) Bid(ctx sdk.Context, billboardId, auctionId uint64, address stri
 	)
 	k.dk.SetFinalBidPricePerMinute(ctx, billboardId, finalBidPricePerMinute)
 	k.Logger(ctx).Info("next finalBidPricePerMinute: %s", finalBidPricePerMinute.String())
+
+	// TODO: 지급시 STO 계산해서 STO 및 billboard owner에게 분산 지급
 }
