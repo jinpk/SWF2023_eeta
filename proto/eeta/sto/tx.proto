@@ -30,6 +30,7 @@ message MsgFund {
   string                   creator = 1;
   uint64                   sto_id   = 2;
   cosmos.base.v1beta1.Coin amount  = 3 [(gogoproto.nullable) = false];
+  uint64 billboard_id        = 4;
 }
 
 message MsgFundResponse {}
