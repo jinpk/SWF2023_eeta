@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 // @mui
@@ -8,7 +9,7 @@ import { fCurrency } from '../../../utils/formatNumber';
 // components
 import Label from '../../../components/label';
 import { ColorPreview } from '../../../components/color-utils';
-
+import { fDateTime } from '../../../utils/formatTime';
 // ----------------------------------------------------------------------
 
 const StyledProductImg = styled('img')({
@@ -22,20 +23,18 @@ const StyledProductImg = styled('img')({
 // ----------------------------------------------------------------------
 
 StoCard.propTypes = {
-  product: PropTypes.object,
+  sto: PropTypes.object,
 };
 
-export default function StoCard({ product }) {
-  const { id, name, cover, price, colors, status, priceSale } = product;
-
+export default function StoCard({ sto }) {
+  const { id, billboard_id, organizer_address, organizer_url, organizer_image_url, name, start, end, user_share, organizer_share, goal, funded, sto_address} = sto;
   return (
     <Card>
       <Link to={`/dashboard/sto/${id}`}>
       <Box sx={{ pt: '100%', position: 'relative' }}>
-        {status && (
           <Label
             variant="filled"
-            color={(status === 'sale' && 'error') || 'info'}
+            color={'info'}
             sx={{
               zIndex: 9,
               top: 16,
@@ -44,10 +43,9 @@ export default function StoCard({ product }) {
               textTransform: 'uppercase',
             }}
           >
-            {status}
+            {billboard_id}
           </Label>
-        )}
-        <StyledProductImg alt={name} src={cover} />
+        <StyledProductImg alt={name} src='/assets/images/covers/cover_1.jpg' />
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
@@ -56,22 +54,16 @@ export default function StoCard({ product }) {
             {name}
           </Typography>
         </Link>
-
+        <Typography variant="subtitle1">
+        모금액 : {funded.amount}
+          </Typography>
+          <Typography variant="subtitle2" noWrap>
+          목표 금액 : {goal.amount}
+          </Typography>
         <Stack direction="row" alignItems="center" justifyContent="space-between">
-          <ColorPreview colors={colors} />
-          <Typography variant="subtitle1">
-            <Typography
-              component="span"
-              variant="body1"
-              sx={{
-                color: 'text.disabled',
-                textDecoration: 'line-through',
-              }}
-            >
-              {priceSale && fCurrency(priceSale)}
-            </Typography>
-            &nbsp;
-            {fCurrency(price)}
+        
+          <Typography variant="subtitle2">
+          {new Date(start * 1000).toString()} ~ {new Date(end * 1000).toString()}
           </Typography>
         </Stack>
       </Stack>

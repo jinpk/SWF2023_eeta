@@ -1,7 +1,8 @@
+/* eslint-disable camelcase */
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { faker } from '@faker-js/faker';
 // @mui
@@ -106,6 +107,8 @@ export default function WalletPage() {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  const [account, setAccount] = useState();
+
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
   };
@@ -167,8 +170,49 @@ export default function WalletPage() {
 
   const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
 
-  const isNotFound = !filteredUsers.length && !!filterName;
 
+  useEffect(() => {
+    async function fetchAccount() {
+      try {
+        const account = await window.cosmostation.cosmos.request({
+          method: "cos_account",
+          params: { chainName: "eeta" },
+        }); 
+      setAccount(account);
+      console.log(account);
+      } catch (error) {
+        console.error('Error fetching billboards:', error);
+      }
+    }
+
+    async function fetchStos() {
+      try {
+        const response = await fetch('http://3.37.36.76:1317/eeta/stos');
+        const data = await response.json();
+        setStos(data.billboard);
+      } catch (error) {
+        console.error('Error fetching billboards:', error);
+      }
+    }
+
+    async function fetchBillboards() {
+      try {
+        const response = await fetch('http://3.37.36.76:1317/eeta/billboards');
+        const data = await response.json();
+        setBillboards(data.billboard);
+      } catch (error) {
+        console.error('Error fetching billboards:', error);
+      }
+    }
+
+    fetchBillboards();
+    fetchStos();
+    fetchAccount();
+  }, []);
+  
+  const [billboards, setBillboards] = useState([]);
+  const [stos, setStos] = useState([]);
+   
   return (
     <>
       <Helmet>
@@ -177,11 +221,11 @@ export default function WalletPage() {
 
       <Container>
       <Typography variant="h4" gutterBottom>
-            Hello, 0x00000 🙈
+            Hello 🙈
           </Typography>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h1" component="h2">
-            3000 AST
+            3000 KRW
           </Typography>          
           <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleDeposit}>
             Deposit
@@ -190,49 +234,59 @@ export default function WalletPage() {
 
 
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="총 자산" total={714000} icon={'ant-design:android-filled'} />
-          </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="펀딩 중" total={1352831} color="info" icon={'ant-design:apple-filled'} />
-          </Grid>
+<Grid item xs={12} md={6} lg={6}>
+  <AppNewsUpdate
+    title="참여중인 펀딩"
+    list={billboards.map((item, index) => ({
+      id: item.id,
+      title: item.name,
+      description: item.final_bid_price_per_minute.amount + item.board_type,
+      image: `/assets/images/covers/cover_4.jpg`,
+      postedAt: faker.date.recent(),
+    }))}
+  />
+</Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="예상 수익" total={234} color="error" icon={'ant-design:bug-filled'} />
-          </Grid>
+<Grid item xs={12} md={6} lg={6}>
+  <AppNewsUpdate
+    title="나의 광고"
+    list={billboards.map((item, index) => ({
+      id: item.id,
+      title: item.name,
+      description: item.final_bid_price_per_minute.amount + item.board_type,
+      image: `/assets/images/covers/cover_3.jpg`,
+      postedAt: faker.date.recent(),
+    }))}
+  />
+</Grid>
 
-          <Grid item xs={12} md={6} lg={8}>
-            <AppNewsUpdate
-              title="펀딩 내역"
-              list={[...Array(5)].map((_, index) => ({
-                id: faker.datatype.uuid(),
-                title: faker.name.jobTitle(),
-                description: faker.name.jobTitle(),
-                image: `/assets/images/covers/cover_${index + 1}.jpg`,
-                postedAt: faker.date.recent(),
-              }))}
-            />
-          </Grid>
+<Grid item xs={12} md={6} lg={6}>
+  <AppNewsUpdate
+    title="내가 모금중인 STO"
+    list={billboards.map((item, index) => ({
+      id: item.id,
+      title: item.name,
+      description: item.final_bid_price_per_minute.amount + item.board_type,
+      image: `/assets/images/covers/cover_1.jpg`,
+      postedAt: faker.date.recent(),
+    }))}
+  />
+</Grid>
 
-          <Grid item xs={12} md={6} lg={4}>
-            <AppOrderTimeline
-              title="투자 히스토리"
-              list={[...Array(5)].map((_, index) => ({
-                id: faker.datatype.uuid(),
-                title: [
-                  '1983, orders, $4220',
-                  '12 Invoices have been paid',
-                  'Order #37745 from September',
-                  'New order placed #XF-2356',
-                  'New order placed #XF-2346',
-                ][index],
-                type: `order${index + 1}`,
-                time: faker.date.past(),
-              }))}
-            />
-          </Grid>
-        </Grid>
+<Grid item xs={12} md={6} lg={6}>
+  <AppNewsUpdate
+    title="내가 판매중인 STO"
+    list={billboards.map((item, index) => ({
+      id: item.id,
+      title: item.name,
+      description: item.final_bid_price_per_minute.amount + item.board_type,
+      image: `/assets/images/covers/cover_2.jpg`,
+      postedAt: faker.date.recent(),
+    }))}
+  />
+</Grid>
+                    </Grid>
       </Container>
     </>
   );

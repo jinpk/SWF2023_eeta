@@ -33,16 +33,6 @@ const navConfig = [
     path: '/dashboard/wallet',
     icon: icon('ic_user'),
   },
-  {
-    title: '나의 광고',
-    path: '/manage/billboard',
-    icon: icon('ic_cart'),
-  },
-  {
-    title: '나의 STO',
-    path: '/manage/sto',
-    icon: icon('ic_cart'),
-  },
 ];
 
 export default navConfig;

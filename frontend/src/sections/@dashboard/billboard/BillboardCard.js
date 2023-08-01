@@ -46,7 +46,7 @@ export default function BillboardCard({ billboard }) {
           >
             {board_type}
           </Label>
-        <StyledProductImg alt={name} src='/assets/images/covers/cover_1.jpg' />
+        <StyledProductImg alt={name} src='/assets/images/covers/cover_4.jpg' />
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
@@ -58,7 +58,7 @@ export default function BillboardCard({ billboard }) {
 
         <Stack direction="row" alignItems="center" justifyContent="space-between">
           <Typography variant="subtitle1">
-            {final_bid_price_per_minute.amount} {final_bid_price_per_minute.denom}
+            최저 STO 진행 금액 : {final_bid_price_per_minute.amount} {final_bid_price_per_minute.denom}
           </Typography>
         </Stack>
       </Stack>

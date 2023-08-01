@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
@@ -23,12 +24,12 @@ import {
   TablePagination,
 } from '@mui/material';
 // components
+import { SigningStargateClient } from '@cosmjs/stargate';
 import Label from '../components/label';
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
 // sections
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
-import { StargateClient } from '@cosmjs/stargate';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -81,7 +82,7 @@ export default function MyBillboardPage() {
   useEffect(() => {
     async function fetchBillboards() {
       try {
-        const response = await fetch('http://10.0.14.188:1317/eeta/billboards');
+        const response = await fetch('http://3.37.36.76:1317/eeta/billboards');
         const data = await response.json();
         setBillboards(data.billboard);
       } catch (error) {
@@ -139,7 +140,7 @@ export default function MyBillboardPage() {
 
 
   const handleSign = async () => {
-    const aa = await fetch('http://10.0.14.188:1317/cosmos/auth/v1beta1/accounts/eeta1syvj993c6q256pcggndffp6ucpn69g3h0pwe3g');
+    const aa = await fetch('http://3.37.36.76:1317/cosmos/auth/v1beta1/accounts/eeta1syvj993c6q256pcggndffp6ucpn69g3h0pwe3g');
     const account = await aa.json()
 const seq = account.account.sequence
 const an = account.account.account_number
@@ -170,7 +171,7 @@ const an = account.account.account_number
     });
     const signed = response.signed_doc;
             const {signature} = response;
-            const client = new StargateClient('http://10.0.14.188:1317');
+            const client = new SigningStargateClient('http://3.37.36.76:1317');
             console.log(response);
             client.broadcastTx({
               msg: signed.msgs,
@@ -212,28 +213,28 @@ const an = account.account.account_number
                 />
                 <TableBody>
                   {billboards.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, role, status, company, avatarUrl, isVerified } = row;
+                    const { id, name, board_type, owner_address, url, final_bid_price_per_minute } = row;
                     const selectedUser = selected.indexOf(name) !== -1;
 
                     return (
                       <TableRow hover key={id} tabIndex={-1} role="checkbox" selected={selectedUser}>
                         <TableCell component="th" scope="row">
                           <Stack direction="row" alignItems="center" spacing={2}>
-                            <Avatar alt={name} src={avatarUrl} />
+                            <Avatar alt={name}  />
                             <Typography variant="subtitle2" noWrap>
                               {name}
                             </Typography>
                           </Stack>
                         </TableCell>
 
-                        <TableCell align="left">{company}</TableCell>
+                        <TableCell align="left">{final_bid_price_per_minute.denom}</TableCell>
 
-                        <TableCell align="left">{role}</TableCell>
+                        <TableCell align="left">{owner_address}</TableCell>
 
-                        <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
+                        <TableCell align="left">{url}</TableCell>
 
                         <TableCell align="left">
-                          <Label color={'success'}>{status}</Label>
+                          <Label color={'success'}>{board_type}</Label>
                         </TableCell>
 
                       </TableRow>
@@ -260,35 +261,6 @@ const an = account.account.account_number
           />
         </Card>
       </Container>
-
-      <Popover
-        open={Boolean(open)}
-        anchorEl={open}
-        onClose={handleCloseMenu}
-        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        PaperProps={{
-          sx: {
-            p: 1,
-            width: 140,
-            '& .MuiMenuItem-root': {
-              px: 1,
-              typography: 'body2',
-              borderRadius: 0.75,
-            },
-          },
-        }}
-      >
-        <MenuItem>
-          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-          Edit
-        </MenuItem>
-
-        <MenuItem sx={{ color: 'error.main' }}>
-          <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
-          Delete
-        </MenuItem>
-      </Popover>
     </>
   );
 }
